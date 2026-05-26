@@ -1,11 +1,12 @@
 <?php
 namespace app\controller;
 
+use think\Controller;
 use think\facade\Request;
 use app\model\Favorite;
 use app\model\Pet;
 
-class FavoriteController
+class FavoriteController extends Controller
 {
     public function add()
     {

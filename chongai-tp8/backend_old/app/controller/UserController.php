@@ -1,11 +1,12 @@
 <?php
 namespace app\controller;
 
+use think\Controller;
 use think\facade\Request;
 use app\model\User;
 use Firebase\JWT\JWT;
 
-class UserController
+class UserController extends Controller
 {
     private $secret = 'chongai_jwt_secret_key';
     

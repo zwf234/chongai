@@ -1,10 +1,11 @@
 <?php
 namespace app\controller;
 
+use think\Controller;
 use think\facade\Request;
 use app\model\Pet;
 
-class PetController
+class PetController extends Controller
 {
     public function getList()
     {
@@ -20,10 +21,8 @@ class PetController
         }
         
         if ($keyword) {
-            $query->where(function ($query) use ($keyword) {
-                $query->where('name', 'like', "%{$keyword}%")
-                      ->whereOr('location', 'like', "%{$keyword}%");
-            });
+            $query->where('name', 'like', "%{$keyword}%")
+                  ->whereOr('location', 'like', "%{$keyword}%");
         }
         
         $pets = $query->page($page, $limit)->select();

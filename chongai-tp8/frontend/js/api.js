@@ -1,4 +1,4 @@
-var API_BASE_URL = 'http://localhost:8080';
+var API_BASE_URL = 'http://localhost:8000';
 
 function getToken() {
     return localStorage.getItem('token') || '';

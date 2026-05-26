@@ -1,11 +1,12 @@
 <?php
 namespace app\controller;
 
+use think\Controller;
 use think\facade\Request;
 use app\model\Application;
 use app\model\Pet;
 
-class ApplicationController
+class ApplicationController extends Controller
 {
     public function add()
     {
