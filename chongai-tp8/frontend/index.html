@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宠爱到家 - 让爱不再流浪</title>
+    <link rel="stylesheet" href="https://cdn.amazeui.org/amazeui/2.7.2/css/amazeui.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="am-header header-fixed">
+        <div class="am-header-left">
+            <div class="logo-area">
+                <span class="paw-icon">🐾</span>
+                <span class="logo-text">宠爱到家</span>
+            </div>
+        </div>
+        <div class="am-header-center">
+            <div class="search-bar">
+                <i class="am-icon-search"></i>
+                <input type="text" id="searchInput" placeholder="找你喜欢" />
+                <button class="search-btn">→</button>
+            </div>
+        </div>
+        <div class="am-header-right">
+            <button class="menu-btn" id="menuBtn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <div class="banner-section">
+        <div class="banner-card">
+            <img src="https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cute%20corgi%20dog%20playing%20with%20owner%20on%20carpet%20warm%20lighting%20cozy%20home&image_size=landscape_16_9" alt="领养日活动" class="banner-image">
+            <div class="banner-overlay">
+                <span class="banner-text">来和毛孩玩耍吧!</span>
+            </div>
+            <div class="banner-info">
+                <span class="banner-tag">西安市官方领养日</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-section">
+        <div class="am-row">
+            <div class="am-col-sm-4 stat-item">
+                <div class="stat-number" id="statPets">128</div>
+                <div class="stat-label">待领养</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="am-col-sm-4 stat-item">
+                <div class="stat-number" id="statAdopted">356</div>
+                <div class="stat-label">已领养</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="am-col-sm-4 stat-item">
+                <div class="stat-number" id="statShelters">24</div>
+                <div class="stat-label">合作机构</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pets-section">
+        <div class="section-header">
+            <h2 class="section-title">附近的小伙伴</h2>
+            <button class="view-all" onclick="goToPage('pets.html')">查看全部</button>
+        </div>
+        <div class="am-row" id="petsContainer">
+        </div>
+    </div>
+
+    <div class="about-section">
+        <div class="about-card">
+            <h3 class="about-title">关于我们</h3>
+            <p class="about-content">
+                宠爱到家致力于为流浪动物寻找温暖的家。我们与多家动物保护机构合作，提供安全可靠的领养服务。每一个生命都值得被爱，让我们一起为毛孩子们创造美好的未来。
+            </p>
+            <button class="about-btn" onclick="goToPage('about.html')">了解更多</button>
+        </div>
+    </div>
+
+    <nav class="am-tabs tab-bar">
+        <ul class="am-avg-sm-5">
+            <li class="active">
+                <a href="index.html">
+                    <span class="tab-icon">🏠</span>
+                    <span class="tab-label">首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="pets.html">
+                    <span class="tab-icon">🔍</span>
+                    <span class="tab-label">发现</span>
+                </a>
+            </li>
+            <li class="tab-center-item">
+                <a href="pets.html" class="tab-center-btn">
+                    <span class="center-icon">🐾</span>
+                </a>
+            </li>
+            <li>
+                <a href="favorites.html">
+                    <span class="tab-icon">❤️</span>
+                    <span class="tab-label">收藏</span>
+                </a>
+            </li>
+            <li>
+                <a href="profile.html">
+                    <span class="tab-icon">👤</span>
+                    <span class="tab-label">我的</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <script src="https://cdn.amazeui.org/amazeui/2.7.2/js/amazeui.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/index.js"></script>
+</body>
+</html>

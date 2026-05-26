@@ -1,0 +1,30 @@
+{
+    "name": "chongai/backend",
+    "description": "宠爱到家后端API",
+    "type": "project",
+    "require": {
+        "php": ">=8.0.0",
+        "topthink/framework": "^8.0",
+        "topthink/think-orm": "^3.0",
+        "firebase/php-jwt": "^6.0"
+    },
+    "require-dev": {
+        "topthink/think-trace": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "app\\": "app/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php think service:discover"
+        ],
+        "start": "php think run"
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "optimize-autoloader": true
+    }
+}
