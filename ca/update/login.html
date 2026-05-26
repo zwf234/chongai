@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宠爱到家 - 登录</title>
+    <link rel="stylesheet" href="libs/amazeui/css/amazeui.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="logo-area">
+                <span class="paw-icon">🐾</span>
+                <span class="logo-text">宠爱到家</span>
+            </div>
+            <p class="auth-subtitle">让爱不再流浪</p>
+        </div>
+
+        <form id="loginForm" class="auth-form">
+            <div class="form-group">
+                <label class="form-label">手机号</label>
+                <input type="tel" id="phone" class="form-control" placeholder="请输入手机号" maxlength="11" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">密码</label>
+                <input type="password" id="password" class="form-control" placeholder="请输入密码" />
+            </div>
+            <button type="submit" class="auth-btn">登录</button>
+        </form>
+
+        <div class="auth-footer">
+            <span>还没有账号？</span>
+            <a href="register.html" class="auth-link">立即注册</a>
+        </div>
+    </div>
+
+    <script src="libs/amazeui/js/amazeui.min.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var phone = document.getElementById('phone').value;
+            var password = document.getElementById('password').value;
+            
+            if (!phone || !password) {
+                showModal('请填写完整信息');
+                return;
+            }
+            
+            if (phone.length !== 11) {
+                showModal('请输入正确的手机号');
+                return;
+            }
+            
+            ajax({
+                url: '/api/login',
+                method: 'POST',
+                data: { phone: phone, password: password },
+                success: function(response) {
+                    if (response.code === 200) {
+                        setToken(response.data.token);
+                        showModal('登录成功');
+                        setTimeout(function() {
+                            window.location.href = 'index.html';
+                        }, 1500);
+                    }
+                },
+                error: function(response) {
+                    showModal(response.msg || '登录失败');
+                }
+            });
+        });
+    </script>
+    <script src="js/experience.js"></script>
+</body>
+</html>

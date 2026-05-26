@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宠物领养系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="libs/amazeui/css/amazeui.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 头部区域 -->
+    <header class="new-header">
+        <div class="header-top">
+            <div class="header-logos">
+                <div class="logo-left">
+                    <span class="logo-paw">🐾</span>
+                    <span class="logo-text">宠爱到家</span>
+                </div>
+                <span class="logo-divider">×</span>
+                <div class="logo-right">
+                    <div class="association-name">中国小动物保护协会</div>
+                </div>
+            </div>
+            <div class="header-right">
+                <i class="fas fa-th" style="color: #888;"></i>
+            </div>
+        </div>
+        <div class="search-wrapper">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="globalSearch" placeholder="找你喜欢" />
+                <div class="search-go-btn">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 轮播图 -->
+    <section class="carousel-section">
+        <div class="carousel-container" id="carousel">
+            <div class="carousel-track">
+                <div class="carousel-item active">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20pet%20dog%20adoption%20warm%20family&image_size=square" alt="宠物领养活动" />
+                    <div class="carousel-overlay">
+                        <span class="carousel-text">周末来场玩宠吧！</span>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=healthy%20pet%20food%20fresh%20ingredients&image_size=square" alt="宠物鲜食" />
+                    <div class="carousel-overlay">
+                        <span class="carousel-text">新鲜食材，宠爱加倍</span>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-nav prev" onclick="prevSlide()">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carousel-nav next" onclick="nextSlide()">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <div class="carousel-dots">
+                <span class="dot active" data-index="0" onclick="goToSlide(0)"></span>
+                <span class="dot" data-index="1" onclick="goToSlide(1)"></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 功能板块 -->
+    <section class="features-section">
+        <div class="features-grid">
+            <div class="feature-card" onclick="goToPage('pets.html')">
+                <div class="feature-icon">
+                    <i class="fas fa-paw"></i>
+                </div>
+                <div class="feature-title">宠物领养</div>
+            </div>
+            <div class="feature-card" onclick="alert('宠物鲜食')">
+                <div class="feature-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <div class="feature-title">宠物鲜食</div>
+            </div>
+            <div class="feature-card" onclick="alert('宠物活动')">
+                <div class="feature-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="feature-title">宠物活动</div>
+            </div>
+            <div class="feature-card" onclick="alert('上门喂养')">
+                <div class="feature-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="feature-title">上门喂养</div>
+            </div>
+            <div class="feature-card" onclick="alert('宠物零食')">
+                <div class="feature-icon">
+                    <i class="fas fa-cookie-bite"></i>
+                </div>
+                <div class="feature-title">宠物零食</div>
+            </div>
+            <div class="feature-card" onclick="alert('宠物摄影')">
+                <div class="feature-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <div class="feature-title">宠物摄影</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 待领养宠物 -->
+    <section class="pets-section-new">
+        <div class="section-header-new">
+            <h2 class="section-title-new">待领养宠物</h2>
+            <button class="view-all-new" onclick="goToPage('pets.html')">查看更多</button>
+        </div>
+        <div class="pets-grid" id="petsContainer">
+        </div>
+    </section>
+
+    <!-- 底部导航 -->
+    <nav class="am-tabs tab-bar">
+        <ul class="am-avg-sm-5">
+            <li class="active">
+                <a href="index.html">
+                    <i class="fas fa-home tab-icon"></i>
+                    <span class="tab-label">首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="pets.html">
+                    <i class="fas fa-search tab-icon"></i>
+                    <span class="tab-label">发现</span>
+                </a>
+            </li>
+            <li class="tab-center-item">
+                <a href="pets.html" class="tab-center-btn">
+                    <i class="fas fa-paw center-icon"></i>
+                </a>
+            </li>
+            <li>
+                <a href="favorites.html">
+                    <i class="fas fa-store tab-icon"></i>
+                    <span class="tab-label">商城</span>
+                </a>
+            </li>
+            <li>
+                <a href="profile.html">
+                    <i class="fas fa-user tab-icon"></i>
+                    <span class="tab-label">我的</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <script src="libs/amazeui/js/amazeui.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/index.js"></script>
+    <script>
+        let currentSlide = 0;
+        let slideInterval;
+
+        const slides = document.querySelectorAll('.carousel-item');
+        const dots = document.querySelectorAll('.dot');
+
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            currentSlide = (index + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        function goToSlide(index) {
+            showSlide(index);
+        }
+
+        // 自动轮播
+        function startAutoSlide() {
+            slideInterval = setInterval(nextSlide, 4000);
+        }
+
+        function stopAutoSlide() {
+            clearInterval(slideInterval);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            startAutoSlide();
+            
+            // 鼠标悬停时暂停轮播
+            document.querySelector('.carousel-container').addEventListener('mouseenter', stopAutoSlide);
+            document.querySelector('.carousel-container').addEventListener('mouseleave', startAutoSlide);
+        });
+    </script>
+</body>
+</html>

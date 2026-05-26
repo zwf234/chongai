@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宠爱到家 - 管理后台</title>
+    <link rel="stylesheet" href="libs/amazeui/css/amazeui.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .admin-page {
+            background: var(--bg-color);
+            min-height: 100vh;
+        }
+        .admin-header {
+            background: var(--primary-color);
+            color: #fff;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .stat-card h3 {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .data-table {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .data-table h3 {
+            font-size: 18px;
+            color: var(--text-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .am-table {
+            width: 100%;
+        }
+        .am-table th, .am-table td {
+            padding: 12px;
+            text-align: left;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .status-pending {
+            background: #fff7e6;
+            color: #faad14;
+        }
+        .status-approved {
+            background: #f6ffed;
+            color: #52c41a;
+        }
+        .status-rejected {
+            background: #fff2f0;
+            color: #ff4d4f;
+        }
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+        .am-btn-sm {
+            padding: 5px 12px;
+            font-size: 12px;
+        }
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: var(--bg-color);
+        }
+        .login-box {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .login-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .login-title h2 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .login-title p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .admin-menu {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .menu-item {
+            padding: 12px 24px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            color: var(--text-color);
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .menu-item:hover, .menu-item.active {
+            background: var(--primary-color);
+            color: #fff;
+        }
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="admin-page">
+    <div id="loginArea" class="login-container">
+        <div class="login-box">
+            <div class="login-title">
+                <h2>🐾 宠爱到家</h2>
+                <p>管理后台登录</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">用户名</label>
+                    <input type="text" id="username" class="form-control" placeholder="请输入用户名" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">密码</label>
+                    <input type="password" id="password" class="form-control" placeholder="请输入密码" required>
+                </div>
+                <button type="submit" class="auth-btn">登录</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="adminArea" class="hidden">
+        <div class="admin-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 style="margin: 0; font-size: 24px;">🐾 宠爱到家 - 管理后台</h1>
+                    <p style="margin: 5px 0 0; opacity: 0.8;">欢迎回来，<span id="adminName">管理员</span></p>
+                </div>
+                <button class="am-btn am-btn-danger" onclick="logout()">退出登录</button>
+            </div>
+        </div>
+
+        <div class="admin-container">
+            <div class="admin-menu">
+                <a href="#" class="menu-item active" data-page="dashboard">📊 数据概览</a>
+                <a href="#" class="menu-item" data-page="pets">🐾 宠物管理</a>
+                <a href="#" class="menu-item" data-page="applications">📝 领养申请</a>
+                <a href="#" class="menu-item" data-page="users">👥 用户管理</a>
+            </div>
+
+            <div id="dashboardPage" class="page-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>🐾 宠物总数</h3>
+                        <div class="number" id="petCount">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>👥 用户总数</h3>
+                        <div class="number" id="userCount">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>📝 申请总数</h3>
+                        <div class="number" id="applicationCount">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>❤️ 收藏总数</h3>
+                        <div class="number" id="favoriteCount">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="petsPage" class="page-section hidden">
+                <div class="data-table">
+                    <h3>🐾 宠物列表</h3>
+                    <div class="table-responsive">
+                        <table class="am-table am-table-bordered am-table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>名称</th>
+                                    <th>类型</th>
+                                    <th>品种</th>
+                                    <th>年龄</th>
+                                    <th>性别</th>
+                                    <th>位置</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="petsTableBody">
+                                <tr>
+                                    <td colspan="9" style="text-align: center;">加载中...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="applicationsPage" class="page-section hidden">
+                <div class="data-table">
+                    <h3>📝 领养申请列表</h3>
+                    <div class="table-responsive">
+                        <table class="am-table am-table-bordered am-table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>申请人</th>
+                                    <th>宠物</th>
+                                    <th>联系电话</th>
+                                    <th>申请时间</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="applicationsTableBody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center;">加载中...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="usersPage" class="page-section hidden">
+                <div class="data-table">
+                    <h3>👥 用户列表</h3>
+                    <div class="table-responsive">
+                        <table class="am-table am-table-bordered am-table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>用户名</th>
+                                    <th>手机号</th>
+                                    <th>昵称</th>
+                                    <th>角色</th>
+                                    <th>状态</th>
+                                    <th>注册时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center;">加载中...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="libs/amazeui/js/amazeui.min.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        var API_BASE_URL = ''; // 使用相对路径
+        
+        function getToken() {
+            return localStorage.getItem('admin_token') || '';
+        }
+        
+        function setToken(token) {
+            localStorage.setItem('admin_token', token);
+        }
+        
+        function removeToken() {
+            localStorage.removeItem('admin_token');
+        }
+        
+        function ajax(options) {
+            var method = options.method || 'GET';
+            var url = API_BASE_URL + options.url;
+            var data = options.data || {};
+            var success = options.success || function() {};
+            var error = options.error || function() {};
+
+            var xhr = new XMLHttpRequest();
+            
+            if (method.toUpperCase() === 'GET' && Object.keys(data).length > 0) {
+                var params = [];
+                for (var key in data) {
+                    params.push(key + '=' + encodeURIComponent(data[key]));
+                }
+                url += '?' + params.join('&');
+            }
+
+            xhr.open(method, url, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            
+            var token = getToken();
+            if (token) {
+                xhr.setRequestHeader('Authorization', token);
+            }
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        if (xhr.status === 200) {
+                            success(response);
+                        } else {
+                            error(response);
+                        }
+                    } catch (e) {
+                        error({ code: xhr.status, msg: '请求失败' });
+                    }
+                }
+            };
+
+            if (method.toUpperCase() !== 'GET') {
+                xhr.send(JSON.stringify(data));
+            } else {
+                xhr.send();
+            }
+        }
+        
+        function showModal(content) {
+            alert(content);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLogin();
+            setupMenu();
+            
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleLogin();
+            });
+        });
+        
+        function checkLogin() {
+            var token = getToken();
+            if (token) {
+                document.getElementById('loginArea').classList.add('hidden');
+                document.getElementById('adminArea').classList.remove('hidden');
+                loadDashboard();
+            }
+        }
+        
+        function handleLogin() {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                showModal('请输入用户名和密码');
+                return;
+            }
+            
+            ajax({
+                url: '/admin/login',
+                method: 'POST',
+                data: { username: username, password: password },
+                success: function(response) {
+                    if (response.code === 200) {
+                        setToken(response.data.token);
+                        document.getElementById('adminName').textContent = response.data.user.username;
+                        document.getElementById('loginArea').classList.add('hidden');
+                        document.getElementById('adminArea').classList.remove('hidden');
+                        showModal('登录成功');
+                        loadDashboard();
+                    }
+                },
+                error: function(response) {
+                    showModal(response.msg || '登录失败');
+                }
+            });
+        }
+        
+        function logout() {
+            removeToken();
+            document.getElementById('loginArea').classList.remove('hidden');
+            document.getElementById('adminArea').classList.add('hidden');
+            showModal('已退出登录');
+        }
+        
+        function setupMenu() {
+            var menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(function(item) {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var page = this.dataset.page;
+                    
+                    menuItems.forEach(function(mi) {
+                        mi.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    document.querySelectorAll('.page-section').forEach(function(section) {
+                        section.classList.add('hidden');
+                    });
+                    
+                    document.getElementById(page + 'Page').classList.remove('hidden');
+                    
+                    if (page === 'dashboard') {
+                        loadDashboard();
+                    } else if (page === 'pets') {
+                        loadPets();
+                    } else if (page === 'applications') {
+                        loadApplications();
+                    } else if (page === 'users') {
+                        loadUsers();
+                    }
+                });
+            });
+        }
+        
+        function loadDashboard() {
+            ajax({
+                url: '/admin/stats',
+                method: 'GET',
+                success: function(response) {
+                    if (response.code === 200) {
+                        document.getElementById('petCount').textContent = response.data.pet_count;
+                        document.getElementById('userCount').textContent = response.data.user_count;
+                        document.getElementById('applicationCount').textContent = response.data.application_count;
+                        document.getElementById('favoriteCount').textContent = response.data.favorite_count;
+                    }
+                }
+            });
+        }
+        
+        function loadPets() {
+            ajax({
+                url: '/admin/pets',
+                method: 'GET',
+                data: { limit: 100 },
+                success: function(response) {
+                    if (response.code === 200 && response.data.list) {
+                        var html = '';
+                        response.data.list.forEach(function(pet) {
+                            var statusText = pet.status == 1 ? '正常' : '已删除';
+                            html += '<tr>';
+                            html += '<td>' + pet.id + '</td>';
+                            html += '<td>' + pet.name + '</td>';
+                            html += '<td>' + (pet.type === 'dog' ? '🐕 狗' : '🐱 猫') + '</td>';
+                            html += '<td>' + pet.breed + '</td>';
+                            html += '<td>' + pet.age + '</td>';
+                            html += '<td>' + (pet.gender === 'male' ? '雄性' : '雌性') + '</td>';
+                            html += '<td>' + pet.location + '</td>';
+                            html += '<td><span class="status-badge ' + (pet.status == 1 ? 'status-approved' : 'status-rejected') + '">' + statusText + '</span></td>';
+                            html += '<td><div class="btn-group">';
+                            html += '<button class="am-btn am-btn-primary am-btn-sm" onclick="viewPet(' + pet.id + ')">查看</button>';
+                            if (pet.status == 1) {
+                                html += '<button class="am-btn am-btn-danger am-btn-sm" onclick="deletePet(' + pet.id + ')">删除</button>';
+                            }
+                            html += '</div></td>';
+                            html += '</tr>';
+                        });
+                        document.getElementById('petsTableBody').innerHTML = html || '<tr><td colspan="9" style="text-align: center;">暂无数据</td></tr>';
+                    }
+                }
+            });
+        }
+        
+        function loadApplications() {
+            ajax({
+                url: '/admin/applications',
+                method: 'GET',
+                success: function(response) {
+                    if (response.code === 200 && response.data) {
+                        var html = '';
+                        response.data.forEach(function(app) {
+                            var statusClass = 'status-' + app.status;
+                            var statusText = app.status === 'pending' ? '待审核' : (app.status === 'approved' ? '已通过' : '未通过');
+                            html += '<tr>';
+                            html += '<td>' + app.id + '</td>';
+                            html += '<td>' + app.name + '</td>';
+                            html += '<td>' + app.pet_name + '</td>';
+                            html += '<td>' + app.phone + '</td>';
+                            html += '<td>' + app.date + '</td>';
+                            html += '<td><span class="status-badge ' + statusClass + '">' + statusText + '</span></td>';
+                            html += '<td><div class="btn-group">';
+                            if (app.status === 'pending') {
+                                html += '<button class="am-btn am-btn-success am-btn-sm" onclick="approveApplication(' + app.id + ')">通过</button>';
+                                html += '<button class="am-btn am-btn-danger am-btn-sm" onclick="rejectApplication(' + app.id + ')">拒绝</button>';
+                            }
+                            html += '</div></td>';
+                            html += '</tr>';
+                        });
+                        document.getElementById('applicationsTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align: center;">暂无数据</td></tr>';
+                    }
+                }
+            });
+        }
+        
+        function loadUsers() {
+            ajax({
+                url: '/admin/users',
+                method: 'GET',
+                data: { limit: 100 },
+                success: function(response) {
+                    if (response.code === 200 && response.data.list) {
+                        var html = '';
+                        response.data.list.forEach(function(user) {
+                            var roleText = user.role === 'admin' ? '管理员' : '普通用户';
+                            var statusText = user.status == 1 ? '正常' : '禁用';
+                            html += '<tr>';
+                            html += '<td>' + user.id + '</td>';
+                            html += '<td>' + user.username + '</td>';
+                            html += '<td>' + (user.phone || '-') + '</td>';
+                            html += '<td>' + user.name + '</td>';
+                            html += '<td>' + roleText + '</td>';
+                            html += '<td><span class="status-badge ' + (user.status == 1 ? 'status-approved' : 'status-rejected') + '">' + statusText + '</span></td>';
+                            html += '<td>' + user.created_at + '</td>';
+                            html += '</tr>';
+                        });
+                        document.getElementById('usersTableBody').innerHTML = html || '<tr><td colspan="7" style="text-align: center;">暂无数据</td></tr>';
+                    }
+                }
+            });
+        }
+        
+        function viewPet(id) {
+            window.open('/pet-detail.html?id=' + id, '_blank');
+        }
+        
+        function deletePet(id) {
+            if (!confirm('确定要删除这只宠物吗？')) {
+                return;
+            }
+            
+            ajax({
+                url: '/admin/pet/' + id,
+                method: 'DELETE',
+                success: function(response) {
+                    if (response.code === 200) {
+                        showModal('删除成功');
+                        loadPets();
+                    }
+                },
+                error: function(response) {
+                    showModal(response.msg || '删除失败');
+                }
+            });
+        }
+        
+        function approveApplication(id) {
+            ajax({
+                url: '/admin/application/' + id,
+                method: 'PUT',
+                data: { status: 'approved' },
+                success: function(response) {
+                    if (response.code === 200) {
+                        showModal('已通过');
+                        loadApplications();
+                    }
+                },
+                error: function(response) {
+                    showModal(response.msg || '操作失败');
+                }
+            });
+        }
+        
+        function rejectApplication(id) {
+            ajax({
+                url: '/admin/application/' + id,
+                method: 'PUT',
+                data: { status: 'rejected' },
+                success: function(response) {
+                    if (response.code === 200) {
+                        showModal('已拒绝');
+                        loadApplications();
+                    }
+                },
+                error: function(response) {
+                    showModal(response.msg || '操作失败');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

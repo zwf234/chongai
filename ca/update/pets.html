@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宠爱到家 - 宠物列表</title>
+    <link rel="stylesheet" href="libs/amazeui/css/amazeui.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="am-header header-fixed">
+        <div class="am-header-left">
+            <button class="back-btn" onclick="goToPage('index.html')">←</button>
+        </div>
+        <div class="am-header-center">
+            <div class="search-bar">
+                <i class="am-icon-search"></i>
+                <input type="text" id="searchInput" placeholder="搜索宠物名称..." />
+                <button class="search-btn">→</button>
+            </div>
+        </div>
+        <div class="am-header-right">
+            <div class="placeholder"></div>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <h1 class="page-title">全部小伙伴</h1>
+        <p class="page-subtitle">为毛孩子找到温暖的家</p>
+    </div>
+
+    <div class="filter-section">
+        <div class="filter-tabs">
+            <button class="filter-tab active" id="tabAll">全部</button>
+            <button class="filter-tab" id="tabLatest">最新</button>
+            <button class="filter-tab" id="tabNear">距离最近</button>
+        </div>
+        <div class="type-filter">
+            <button class="type-btn active" data-type="all">🐾 全部</button>
+            <button class="type-btn" data-type="dog">🐕 狗狗</button>
+            <button class="type-btn" data-type="cat">🐱 猫咪</button>
+        </div>
+    </div>
+
+    <div class="pets-content">
+        <div class="am-row" id="petsContainer">
+        </div>
+    </div>
+
+    <nav class="am-tabs tab-bar">
+        <ul class="am-avg-sm-5">
+            <li>
+                <a href="index.html">
+                    <span class="tab-icon">🏠</span>
+                    <span class="tab-label">首页</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="pets.html">
+                    <span class="tab-icon">🔍</span>
+                    <span class="tab-label">发现</span>
+                </a>
+            </li>
+            <li class="tab-center-item">
+                <a href="pets.html" class="tab-center-btn">
+                    <span class="center-icon">🐾</span>
+                </a>
+            </li>
+            <li>
+                <a href="favorites.html">
+                    <span class="tab-icon">❤️</span>
+                    <span class="tab-label">收藏</span>
+                </a>
+            </li>
+            <li>
+                <a href="profile.html">
+                    <span class="tab-icon">👤</span>
+                    <span class="tab-label">我的</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <script src="libs/amazeui/js/amazeui.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/pets.js"></script>
+    <script src="js/experience.js"></script>
+</body>
+</html>
