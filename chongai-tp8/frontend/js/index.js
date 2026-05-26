@@ -1,14 +1,29 @@
 document.addEventListener('DOMContentLoaded', function() {
     loadPets();
     
-    document.getElementById('searchInput').addEventListener('keyup', function(e) {
-        if (e.keyCode === 13) {
-            var keyword = this.value;
-            if (keyword) {
-                window.location.href = 'pets.html?keyword=' + encodeURIComponent(keyword);
+    var searchInput = document.getElementById('globalSearch');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function(e) {
+            if (e.keyCode === 13) {
+                var keyword = this.value;
+                if (keyword) {
+                    window.location.href = 'pets.html?keyword=' + encodeURIComponent(keyword);
+                }
             }
-        }
-    });
+        });
+    }
+    
+    var oldSearchInput = document.getElementById('searchInput');
+    if (oldSearchInput) {
+        oldSearchInput.addEventListener('keyup', function(e) {
+            if (e.keyCode === 13) {
+                var keyword = this.value;
+                if (keyword) {
+                    window.location.href = 'pets.html?keyword=' + encodeURIComponent(keyword);
+                }
+            }
+        });
+    }
 });
 
 function loadPets() {
@@ -29,96 +44,75 @@ function loadPets() {
 
 function loadMockPets() {
     var pets = [
-        { id: 1, name: 'Chidi', age: '2岁', type: 'cat', location: '西安市.北大街', image: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=beautiful%20fluffy%20gray%20cat%20portrait%20elegant%20pose&image_size=square_hd' },
-        { id: 2, name: 'Yael', age: '3岁', type: 'dog', location: '西安市.北大街', image: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cute%20beagle%20dog%20lying%20down%20happy%20expression&image_size=square_hd' },
-        { id: 3, name: 'Bella', age: '1岁', type: 'dog', location: '西安市.南大街', image: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=white%20fluffy%20dog%20being%20squeezed%20cute%20face&image_size=square_hd' },
-        { id: 4, name: 'Mochi', age: '2岁', type: 'cat', location: '西安市.东大街', image: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=gray%20british%20shorthair%20cat%20on%20grass%20peaceful&image_size=square_hd' }
+        { id: 1, name: '罐头', type: 'cat', location: '大兴医院', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20white%20cat%20fluffy&image_size=square', tag: '最多点击' },
+        { id: 2, name: 'Admin', type: 'dog', location: '北京市', image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20golden%20retriever%20puppy&image_size=square' },
+        { id: 3, name: 'Chidi', type: 'cat', location: '西安市', image: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=beautiful%20fluffy%20gray%20cat%20portrait%20elegant%20pose&image_size=square_hd' },
+        { id: 4, name: 'Yael', type: 'dog', location: '西安市', image: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cute%20beagle%20dog%20lying%20down%20happy%20expression&image_size=square_hd' }
     ];
     renderPets(pets);
 }
 
 function renderPets(pets) {
     var container = document.getElementById('petsContainer');
+    if (!container) return;
+    
     container.innerHTML = '';
     
     pets.forEach(function(pet) {
-        var col = document.createElement('div');
-        col.className = 'am-col-xs-6 am-col-sm-4 am-col-md-3';
-        
         var card = document.createElement('div');
-        card.className = 'pet-card';
+        card.className = 'pet-card-new';
         card.onclick = function() {
             window.location.href = 'pet-detail.html?id=' + pet.id;
         };
         
         var imageWrapper = document.createElement('div');
-        imageWrapper.className = 'pet-image-wrapper';
+        imageWrapper.className = 'pet-image-new';
         
         var img = document.createElement('img');
         img.src = pet.image;
         img.alt = pet.name;
-        img.className = 'pet-image';
         
         imageWrapper.appendChild(img);
+        
+        if (pet.tag) {
+            var tag = document.createElement('div');
+            tag.className = 'pet-tag-new';
+            tag.textContent = pet.tag;
+            imageWrapper.appendChild(tag);
+        }
+        
         card.appendChild(imageWrapper);
         
-        var body = document.createElement('div');
-        body.className = 'pet-card-body';
+        var info = document.createElement('div');
+        info.className = 'pet-info-new';
         
-        var nameRow = document.createElement('div');
-        nameRow.className = 'pet-name-row';
-        
-        var name = document.createElement('span');
-        name.className = 'pet-name';
+        var name = document.createElement('div');
+        name.className = 'pet-name-new';
         name.textContent = pet.name;
+        info.appendChild(name);
         
-        var age = document.createElement('span');
-        age.className = 'pet-age';
-        age.textContent = pet.age;
-        
-        nameRow.appendChild(name);
-        nameRow.appendChild(age);
-        body.appendChild(nameRow);
-        
-        var metaRow = document.createElement('div');
-        metaRow.className = 'pet-meta-row';
-        
-        var type = document.createElement('span');
-        type.className = 'pet-type ' + pet.type;
-        
-        var dot = document.createElement('span');
-        dot.className = 'type-dot';
-        type.appendChild(dot);
-        
+        var typeDetail = document.createElement('div');
+        typeDetail.className = 'pet-detail-new';
+        var typeDot = document.createElement('i');
+        typeDot.className = 'fas fa-circle';
+        typeDot.style.fontSize = '6px';
+        typeDetail.appendChild(typeDot);
         var typeText = document.createElement('span');
         typeText.textContent = pet.type === 'dog' ? '狗狗' : '猫咪';
-        type.appendChild(typeText);
+        typeDetail.appendChild(typeText);
+        info.appendChild(typeDetail);
         
-        var location = document.createElement('span');
-        location.className = 'pet-location';
-        location.textContent = '📍 ' + pet.location;
+        var locationDetail = document.createElement('div');
+        locationDetail.className = 'pet-detail-new';
+        var locationIcon = document.createElement('i');
+        locationIcon.className = 'fas fa-map-marker-alt';
+        locationDetail.appendChild(locationIcon);
+        var locationText = document.createElement('span');
+        locationText.textContent = pet.location;
+        locationDetail.appendChild(locationText);
+        info.appendChild(locationDetail);
         
-        metaRow.appendChild(type);
-        metaRow.appendChild(location);
-        body.appendChild(metaRow);
-        
-        var distance = document.createElement('div');
-        distance.className = 'pet-distance';
-        
-        var distanceIcon = document.createElement('span');
-        distanceIcon.className = 'distance-icon';
-        distanceIcon.textContent = '📍';
-        
-        var distanceText = document.createElement('span');
-        distanceText.className = 'distance-text';
-        distanceText.textContent = '<100m';
-        
-        distance.appendChild(distanceIcon);
-        distance.appendChild(distanceText);
-        body.appendChild(distance);
-        
-        card.appendChild(body);
-        col.appendChild(card);
-        container.appendChild(col);
+        card.appendChild(info);
+        container.appendChild(card);
     });
 }
