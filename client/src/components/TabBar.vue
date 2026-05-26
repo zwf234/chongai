@@ -4,9 +4,7 @@
       :class="['tab-item', { active: currentPath === '/' }]"
       @click="navigate('/')"
     >
-      <div class="tab-icon">
-        <span>🏠</span>
-      </div>
+      <i class="fas fa-home tab-icon"></i>
       <span class="tab-label">首页</span>
     </div>
     
@@ -14,15 +12,13 @@
       :class="['tab-item', { active: currentPath === '/pets' }]"
       @click="navigate('/pets')"
     >
-      <div class="tab-icon">
-        <span>🔍</span>
-      </div>
+      <i class="fas fa-search tab-icon"></i>
       <span class="tab-label">发现</span>
     </div>
     
     <div class="tab-center-item">
       <button class="tab-center-btn" @click="navigate('/pets')">
-        <span class="center-icon">🐾</span>
+        <i class="fas fa-paw center-icon"></i>
       </button>
     </div>
     
@@ -30,19 +26,15 @@
       :class="['tab-item', { active: currentPath === '/favorites' }]"
       @click="navigate('/favorites')"
     >
-      <div class="tab-icon">
-        <span>❤️</span>
-      </div>
-      <span class="tab-label">收藏</span>
+      <i class="fas fa-store tab-icon"></i>
+      <span class="tab-label">商城</span>
     </div>
     
     <div 
       :class="['tab-item', { active: currentPath === '/profile' }]"
       @click="navigate('/profile')"
     >
-      <div class="tab-icon">
-        <span>👤</span>
-      </div>
+      <i class="fas fa-user tab-icon"></i>
       <span class="tab-label">我的</span>
     </div>
   </div>
@@ -82,77 +74,63 @@ onUnmounted(() => {
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--bg-card);
-  padding: 8px 0 20px;
+  background: #fff;
+  padding: 10px 0 20px;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
   z-index: 100;
 }
 
 .tab-item {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 4px 12px;
-  color: var(--text-muted);
+  gap: 4px;
+  color: #999;
+  font-size: 11px;
   cursor: pointer;
+  text-decoration: none;
+  position: relative;
   transition: color 0.3s ease;
-  flex: 1;
-}
-
-.tab-item:hover {
-  color: var(--primary-color);
 }
 
 .tab-item.active {
-  color: var(--primary-color);
+  color: #b8a082;
 }
 
 .tab-icon {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 22px;
-  margin-bottom: 4px;
-}
-
-.tab-label {
-  font-size: 11px;
 }
 
 .tab-center-item {
   position: relative;
-  top: -25px;
-  flex: 0.5;
-  display: flex;
-  justify-content: center;
+  top: -20px;
 }
 
 .tab-center-btn {
-  width: 70px;
-  height: 70px;
-  background: var(--primary-color);
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #b8a082, #a08868);
   border: none;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 20px rgba(92, 77, 70, 0.4);
+  box-shadow: 0 6px 16px rgba(184, 160, 130, 0.4);
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.2s ease;
 }
 
-.tab-center-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 25px rgba(92, 77, 70, 0.5);
+.tab-center-btn:active {
+  transform: scale(0.95);
 }
 
 .center-icon {
-  font-size: 32px;
+  font-size: 26px;
+  color: #fff;
 }
 
 @media screen and (min-width: 768px) {
