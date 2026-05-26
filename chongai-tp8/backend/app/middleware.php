@@ -9,6 +9,4 @@ return [
     // \think\middleware\SessionInit::class,
     // CORS跨域中间件
     \app\middleware\Cors::class,
-    // API认证中间件
-    \app\middleware\ApiAuth::class,
 ];

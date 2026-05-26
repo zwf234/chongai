@@ -1,6 +1,12 @@
 <?php
 use think\facade\Route;
 
+// 根路径 - 显示欢迎信息
+Route::get('/', function () {
+    return '<h1>宠爱到家 - API 服务正常运行！</h1><p>访问 /api/pets 获取宠物列表</p><p>管理后台访问 /admin.html</p>';
+});
+
+// API 路由组
 Route::group('api', function () {
     Route::post('login', 'UserController/login');
     Route::post('register', 'UserController/register');
@@ -21,6 +27,7 @@ Route::group('api', function () {
     Route::put('application/:id', 'ApplicationController/update');
 });
 
+// 管理员路由组
 Route::group('admin', function () {
     Route::post('login', 'UserController/adminLogin');
     Route::get('stats', 'UserController/getStats');
