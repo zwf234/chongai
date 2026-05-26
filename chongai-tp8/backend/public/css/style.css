@@ -570,3 +570,330 @@ button:focus-visible,
 .action-btn {
     will-change: transform;
 }
+
+/* ================= 新首页样式 ================= */
+
+/* 头部区域 */
+.new-header {
+    background: var(--bg-color);
+    padding: 16px 20px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.header-top {
+    margin-bottom: 16px;
+}
+
+.header-logos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.logo-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-paw {
+    font-size: 32px;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.logo-divider {
+    color: var(--text-muted);
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.logo-right {
+    text-align: left;
+}
+
+.association-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.association-en {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.header-action {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.location-select {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.location-select:hover {
+    border-color: var(--brand-orange);
+    transform: translateY(-1px);
+}
+
+.location-icon {
+    font-size: 16px;
+}
+
+.location-text {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.location-arrow {
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+.search-wrapper {
+    flex: 1;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 12px;
+    padding: 4px 4px 4px 16px;
+    border: 1px solid var(--border-color);
+    gap: 10px;
+    transition: all var(--transition-normal);
+}
+
+.search-box:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(20, 20, 19, 0.05);
+}
+
+.search-icon {
+    font-size: 16px;
+}
+
+.search-box input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 10px 0;
+    font-size: 14px;
+    background: transparent;
+}
+
+.search-go-btn {
+    padding: 8px 20px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.search-go-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(20, 20, 19, 0.2);
+}
+
+/* 轮播图区域 */
+.carousel-section {
+    padding: 16px 20px;
+}
+
+.carousel-container {
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-item {
+    min-width: 100%;
+    position: relative;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.carousel-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+    padding: 20px;
+}
+
+.carousel-text {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.carousel-dots {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.dot.active {
+    width: 24px;
+    border-radius: 4px;
+    background: #fff;
+}
+
+/* 功能板块 */
+.features-section {
+    padding: 24px 20px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.feature-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px 12px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all var(--transition-normal);
+}
+
+.feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.feature-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+/* 待领养宠物 */
+.pets-section-new {
+    padding: 8px 20px 32px;
+}
+
+.section-header-new {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.section-title-new {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.view-all-new {
+    font-size: 14px;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.view-all-new:hover {
+    color: var(--primary-color);
+}
+
+.pets-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+/* 响应式优化 */
+@media screen and (max-width: 480px) {
+    .header-logos {
+        gap: 8px;
+    }
+    
+    .logo-paw {
+        font-size: 26px;
+    }
+    
+    .logo-text {
+        font-size: 20px;
+    }
+    
+    .association-name {
+        font-size: 14px;
+    }
+    
+    .features-grid {
+        gap: 12px;
+    }
+    
+    .feature-card {
+        padding: 16px 8px;
+    }
+    
+    .feature-icon {
+        font-size: 28px;
+    }
+    
+    .feature-title {
+        font-size: 13px;
+    }
+}
+
