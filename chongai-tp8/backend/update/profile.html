@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宠爱到家 - 个人中心</title>
+    <link rel="stylesheet" href="libs/amazeui/css/amazeui.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="am-header header-fixed">
+        <div class="am-header-left">
+            <button class="back-btn" onclick="goToPage('index.html')">←</button>
+        </div>
+        <div class="am-header-center">
+            <span class="header-title">个人中心</span>
+        </div>
+        <div class="am-header-right">
+            <div class="placeholder"></div>
+        </div>
+    </header>
+
+    <div class="profile-content">
+        <div class="profile-header">
+            <div class="user-info">
+                <div class="avatar-wrapper">
+                    <div class="avatar">
+                        <span class="avatar-icon">👤</span>
+                    </div>
+                </div>
+                <div class="user-detail">
+                    <h2 id="userName" class="user-name">用户</h2>
+                    <p id="userPhone" class="user-phone">138****8888</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-item">
+                <span class="stat-number">2</span>
+                <span class="stat-label">收藏</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-number">2</span>
+                <span class="stat-label">申请</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-number">1</span>
+                <span class="stat-label">已领养</span>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <div class="menu-card">
+                <button class="menu-item" onclick="goToPage('favorites.html')">
+                    <span class="menu-icon">❤️</span>
+                    <span class="menu-text">我的收藏</span>
+                    <span class="menu-arrow">→</span>
+                </button>
+                <button class="menu-item" onclick="goToPage('applications.html')">
+                    <span class="menu-icon">📝</span>
+                    <span class="menu-text">领养记录</span>
+                    <span class="menu-arrow">→</span>
+                </button>
+                <button class="menu-item">
+                    <span class="menu-icon">🌙</span>
+                    <span class="menu-text">夜间模式</span>
+                    <span class="menu-arrow">→</span>
+                </button>
+            </div>
+
+            <div class="menu-card">
+                <button class="menu-item">
+                    <span class="menu-icon">📞</span>
+                    <span class="menu-text">联系客服</span>
+                    <span class="menu-arrow">→</span>
+                </button>
+                <button class="menu-item">
+                    <span class="menu-icon">📜</span>
+                    <span class="menu-text">用户协议</span>
+                    <span class="menu-arrow">→</span>
+                </button>
+                <button class="menu-item">
+                    <span class="menu-icon">🔒</span>
+                    <span class="menu-text">隐私政策</span>
+                    <span class="menu-arrow">→</span>
+                </button>
+            </div>
+
+            <div class="menu-card">
+                <button class="menu-item" onclick="handleLogout()">
+                    <span class="menu-icon">🚪</span>
+                    <span class="menu-text">退出登录</span>
+                    <span class="menu-arrow">→</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p class="footer-text">宠爱到家 v1.0.0</p>
+            <p class="footer-copyright">让爱不再流浪</p>
+        </div>
+    </div>
+
+    <nav class="am-tabs tab-bar">
+        <ul class="am-avg-sm-5">
+            <li>
+                <a href="index.html">
+                    <span class="tab-icon">🏠</span>
+                    <span class="tab-label">首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="pets.html">
+                    <span class="tab-icon">🔍</span>
+                    <span class="tab-label">发现</span>
+                </a>
+            </li>
+            <li class="tab-center-item">
+                <a href="pets.html" class="tab-center-btn">
+                    <span class="center-icon">🐾</span>
+                </a>
+            </li>
+            <li>
+                <a href="favorites.html">
+                    <span class="tab-icon">❤️</span>
+                    <span class="tab-label">收藏</span>
+                </a>
+            </li>
+            <li class="active">
+                <a href="profile.html">
+                    <span class="tab-icon">👤</span>
+                    <span class="tab-label">我的</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <script src="libs/amazeui/js/amazeui.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/experience.js"></script>
+</body>
+</html>

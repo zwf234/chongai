@@ -1,0 +1,194 @@
+/* 宠爱到家 - 简化版UI框架 */
+/* 替代 AmazeUI 的基础样式 */
+
+/* 重置样式 */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+/* 清除浮动 */
+.am-cf::after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+/* 网格系统 */
+.am-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -8px;
+    margin-right: -8px;
+}
+
+.am-col-sm-4 {
+    width: 100%;
+    padding: 0 8px;
+}
+
+@media (min-width: 768px) {
+    .am-col-sm-4 {
+        width: 33.333333%;
+    }
+}
+
+.am-avg-sm-5 > * {
+    width: 20%;
+    float: left;
+}
+
+/* 头部组件 */
+.am-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    min-height: 50px;
+    padding: 0 10px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+}
+
+.am-header-left,
+.am-header-right {
+    display: flex;
+    align-items: center;
+}
+
+.am-header-center {
+    flex: 1;
+    text-align: center;
+}
+
+/* 按钮组件 */
+.am-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.am-btn-primary {
+    background: #0e90d2;
+    color: #fff;
+}
+
+.am-btn-primary:hover {
+    background: #0c79b1;
+}
+
+.am-btn-danger {
+    background: #dd514c;
+    color: #fff;
+}
+
+.am-btn-sm {
+    padding: 5px 10px;
+    font-size: 14px;
+}
+
+/* 表单组件 */
+.am-form {
+    width: 100%;
+}
+
+.am-form-group {
+    margin-bottom: 15px;
+}
+
+.am-form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.am-form-control {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    outline: none;
+}
+
+.am-form-control:focus {
+    border-color: #0e90d2;
+    box-shadow: 0 0 0 2px rgba(14,144,210,0.2);
+}
+
+/* 表格组件 */
+.am-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.am-table th,
+.am-table td {
+    padding: 12px 8px;
+    text-align: left;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.am-table th {
+    background: #f8f8f8;
+    font-weight: 600;
+}
+
+.am-table-bordered {
+    border: 1px solid #e8e8e8;
+}
+
+.am-table-bordered th,
+.am-table-bordered td {
+    border: 1px solid #e8e8e8;
+}
+
+/* 选项卡组件 */
+.am-tabs {
+    width: 100%;
+}
+
+/* 图标 - 简化版 */
+.am-icon-search::before {
+    content: '🔍';
+    font-style: normal;
+}
+
+/* 工具类 */
+.am-text-center {
+    text-align: center;
+}
+
+.am-fl {
+    float: left;
+}
+
+.am-fr {
+    float: right;
+}
+
+.am-hide {
+    display: none !important;
+}
+
+/* 响应式工具 */
+@media (max-width: 640px) {
+    .am-hide-sm-only {
+        display: none !important;
+    }
+}
+
+/* 容器 */
+.am-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
