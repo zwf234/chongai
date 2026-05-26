@@ -10,6 +10,14 @@ class User extends Model
     
     protected $hidden = ['password', 'created_at', 'updated_at'];
     
+    protected $append = ['role_text'];
+    
+    public function getRoleTextAttr($value, $data)
+    {
+        $status = [0 => '禁用', 1 => '正常'];
+        return $status[$data['status']] ?? '';
+    }
+    
     public function favorites()
     {
         return $this->hasMany(Favorite::class, 'user_id');

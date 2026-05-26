@@ -20,3 +20,19 @@ Route::group('api', function () {
     Route::get('applications', 'ApplicationController/getList');
     Route::put('application/:id', 'ApplicationController/update');
 });
+
+Route::group('admin', function () {
+    Route::post('login', 'UserController/adminLogin');
+    Route::get('stats', 'UserController/getStats');
+    
+    Route::get('pets', 'PetController/getList');
+    Route::get('pet/:id', 'PetController/getDetail');
+    Route::post('pet', 'PetController/add');
+    Route::put('pet/:id', 'PetController/update');
+    Route::delete('pet/:id', 'PetController/delete');
+    
+    Route::get('applications', 'ApplicationController/getList');
+    Route::put('application/:id', 'ApplicationController/update');
+    
+    Route::get('users', 'UserController/getUserList');
+});

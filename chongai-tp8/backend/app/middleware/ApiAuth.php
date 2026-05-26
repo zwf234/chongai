@@ -8,11 +8,18 @@ use Firebase\JWT\Key;
 
 class ApiAuth
 {
-    private $secret = 'chongai_jwt_secret_key';
+    private $secret = 'chongai_jwt_secret_key_2024';
     
     public function handle($request, Closure $next)
     {
-        $whiteList = ['api/login', 'api/register', 'api/pets', 'api/pet/'];
+        $whiteList = [
+            'api/login',
+            'api/register',
+            'api/pets',
+            'api/pet/',
+            'admin/login',
+            'admin'
+        ];
         
         $path = $request->path();
         
@@ -31,6 +38,8 @@ class ApiAuth
         try {
             $decoded = JWT::decode($token, new Key($this->secret, 'HS256'));
             $request->user_id = $decoded->user_id;
+            $request->username = $decoded->username ?? '';
+            $request->user_role = $decoded->role ?? 'user';
             return $next($request);
         } catch (\Exception $e) {
             return json(['code' => 401, 'msg' => 'token无效']);
