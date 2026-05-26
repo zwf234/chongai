@@ -108,13 +108,27 @@ const formatDate = (dateStr) => {
 <style scoped>
 .applications-page {
   min-height: 100vh;
-  background: #fff8f5;
+  background: var(--bg-color);
 }
 
 .header {
-  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
   padding: 30px 20px;
   color: #fff;
+}
+
+@media screen and (min-width: 768px) {
+  .applications-page {
+    padding-top: 72px;
+  }
+
+  .header {
+    padding: 50px 30px;
+  }
+
+  .header h1 {
+    font-size: 36px;
+  }
 }
 
 .header h1 {

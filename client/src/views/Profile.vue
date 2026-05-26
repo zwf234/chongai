@@ -137,15 +137,42 @@ const handleLogout = () => {
 <style scoped>
 .profile-page {
   min-height: 100vh;
-  background: #fff8f5;
+  background: var(--bg-color);
 }
 
 .header {
-  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
   padding: 30px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+@media screen and (min-width: 768px) {
+  .profile-page {
+    padding-top: 72px;
+  }
+
+  .header {
+    padding: 50px 30px;
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .avatar i {
+    font-size: 36px;
+  }
+
+  .user-detail h2 {
+    font-size: 28px;
+  }
+
+  .user-detail p {
+    font-size: 16px;
+  }
 }
 
 .user-info {

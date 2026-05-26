@@ -4,64 +4,69 @@
       <i class="fas fa-arrow-left"></i>
     </div>
 
-    <div class="pet-image-wrapper">
-      <img :src="pet.image" :alt="pet.name" />
-    </div>
-
-    <div class="pet-content">
-      <div class="pet-header">
-        <div class="pet-title">
-          <h1>{{ pet.name }}</h1>
-          <span class="pet-type">{{ pet.type }} · {{ pet.breed }}</span>
-        </div>
-        <div class="favorite-btn" @click="toggleFavorite">
-          <i class="fas fa-heart" :class="{ active: isFavorited }"></i>
+    <div class="pet-main">
+      <div class="pet-image-wrapper">
+        <img :src="pet.image" :alt="pet.name" />
+        <div class="pet-status-badge" :class="getStatusClass(pet.status)">
+          {{ getStatusText(pet.status) }}
         </div>
       </div>
 
-      <div class="pet-meta-row">
-        <div class="meta-item">
-          <i class="fas fa-calendar"></i>
-          <span>{{ pet.age }}岁</span>
+      <div class="pet-content">
+        <div class="pet-header">
+          <div class="pet-title">
+            <h1>{{ pet.name }}</h1>
+            <span class="pet-type">{{ pet.type }} · {{ pet.breed }}</span>
+          </div>
+          <div class="favorite-btn" @click="toggleFavorite">
+            <i class="fas fa-heart" :class="{ active: isFavorited }"></i>
+          </div>
         </div>
-        <div class="meta-item">
-          <i class="fas fa-venus-mars"></i>
-          <span>{{ pet.gender }}</span>
-        </div>
-        <div class="meta-item">
-          <i class="fas fa-weight"></i>
-          <span>{{ pet.weight }}kg</span>
-        </div>
-        <div class="meta-item">
-          <i class="fas fa-map-marker-alt"></i>
-          <span>{{ pet.location }}</span>
-        </div>
-      </div>
 
-      <div class="section">
-        <h3><i class="fas fa-info-circle"></i> 宠物介绍</h3>
-        <p>{{ pet.description }}</p>
-      </div>
+        <div class="pet-meta-row">
+          <div class="meta-item">
+            <i class="fas fa-calendar"></i>
+            <span>{{ pet.age }}岁</span>
+          </div>
+          <div class="meta-item">
+            <i class="fas fa-venus-mars"></i>
+            <span>{{ pet.gender }}</span>
+          </div>
+          <div class="meta-item">
+            <i class="fas fa-weight"></i>
+            <span>{{ pet.weight }}kg</span>
+          </div>
+          <div class="meta-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>{{ pet.location }}</span>
+          </div>
+        </div>
 
-      <div class="section">
-        <h3><i class="fas fa-heart"></i> 领养要求</h3>
-        <ul>
-          <li>• 有稳定的住所和收入</li>
-          <li>• 家人同意领养</li>
-          <li>• 定期回访和疫苗接种</li>
-          <li>• 签署领养协议</li>
-        </ul>
-      </div>
+        <div class="section">
+          <h3><i class="fas fa-info-circle"></i> 宠物介绍</h3>
+          <p>{{ pet.description }}</p>
+        </div>
 
-      <div class="action-bar">
-        <button class="btn btn-secondary" @click="goToChat">
-          <i class="fas fa-message-circle"></i>
-          联系救助人
-        </button>
-        <button class="btn btn-primary" @click="showApplyModal = true" :disabled="pet.status !== 'available'">
-          <i class="fas fa-paw"></i>
-          {{ pet.status === 'available' ? '申请领养' : (pet.status === 'pending' ? '待审核' : '已领养') }}
-        </button>
+        <div class="section">
+          <h3><i class="fas fa-heart"></i> 领养要求</h3>
+          <ul>
+            <li>• 有稳定的住所和收入</li>
+            <li>• 家人同意领养</li>
+            <li>• 定期回访和疫苗接种</li>
+            <li>• 签署领养协议</li>
+          </ul>
+        </div>
+
+        <div class="action-bar">
+          <button class="btn btn-secondary" @click="goToChat">
+            <i class="fas fa-message-circle"></i>
+            联系救助人
+          </button>
+          <button class="btn btn-primary" @click="showApplyModal = true" :disabled="pet.status !== 'available'">
+            <i class="fas fa-paw"></i>
+            {{ pet.status === 'available' ? '申请领养' : (pet.status === 'pending' ? '待审核' : '已领养') }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -192,6 +197,15 @@ const submitApplication = async () => {
     alert('提交失败，请重试')
   }
 }
+
+const getStatusClass = (status) => {
+  return `status-${status}`
+}
+
+const getStatusText = (status) => {
+  const map = { available: '可领养', pending: '待审核', adopted: '已领养' }
+  return map[status] || status
+}
 </script>
 
 <style scoped>
@@ -220,6 +234,11 @@ const submitApplication = async () => {
   font-size: 18px;
 }
 
+.pet-main {
+  display: flex;
+  flex-direction: column;
+}
+
 .pet-image-wrapper {
   position: relative;
 }
@@ -228,6 +247,15 @@ const submitApplication = async () => {
   width: 100%;
   height: 300px;
   object-fit: cover;
+}
+
+.pet-status-badge {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 14px;
 }
 
 .pet-content {
@@ -248,12 +276,12 @@ const submitApplication = async () => {
 .pet-title h1 {
   font-size: 28px;
   font-weight: 700;
-  color: #333;
+  color: var(--text-color);
 }
 
 .pet-type {
   font-size: 14px;
-  color: #999;
+  color: var(--text-muted);
   margin-left: 8px;
 }
 
@@ -265,6 +293,7 @@ const submitApplication = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .favorite-btn i {
@@ -274,7 +303,7 @@ const submitApplication = async () => {
 }
 
 .favorite-btn i.active {
-  color: #ff9a9e;
+  color: var(--primary-color);
 }
 
 .pet-meta-row {
@@ -296,7 +325,7 @@ const submitApplication = async () => {
 .meta-item i {
   font-size: 18px;
   margin-bottom: 4px;
-  color: #ff9a9e;
+  color: var(--primary-color);
 }
 
 .meta-item span {
@@ -310,7 +339,7 @@ const submitApplication = async () => {
 .section h3 {
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-color);
   margin-bottom: 12px;
 }
 
@@ -344,5 +373,111 @@ const submitApplication = async () => {
 
 .action-bar .btn:disabled {
   opacity: 0.5;
+}
+
+@media screen and (min-width: 768px) {
+  .pet-detail {
+    padding-top: 72px;
+  }
+
+  .pet-main {
+    max-width: 1000px;
+    margin: 0 auto;
+    flex-direction: row;
+    padding: 30px;
+    gap: 40px;
+  }
+
+  .pet-image-wrapper {
+    flex-shrink: 0;
+    width: 45%;
+  }
+
+  .pet-image-wrapper img {
+    height: 400px;
+    border-radius: 20px;
+  }
+
+  .pet-content {
+    flex: 1;
+    margin-top: 0;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .pet-title h1 {
+    font-size: 36px;
+  }
+
+  .pet-type {
+    font-size: 18px;
+  }
+
+  .favorite-btn {
+    width: 56px;
+    height: 56px;
+  }
+
+  .favorite-btn i {
+    font-size: 24px;
+  }
+
+  .pet-meta-row {
+    padding: 24px;
+  }
+
+  .meta-item i {
+    font-size: 24px;
+  }
+
+  .meta-item span {
+    font-size: 14px;
+  }
+
+  .section h3 {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .section p {
+    font-size: 16px;
+  }
+
+  .section li {
+    font-size: 16px;
+  }
+
+  .action-bar {
+    padding: 30px 0 0;
+  }
+
+  .action-bar .btn {
+    padding: 16px 32px;
+    font-size: 18px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .pet-main {
+    max-width: 1200px;
+    gap: 60px;
+  }
+
+  .pet-image-wrapper img {
+    height: 500px;
+  }
+
+  .pet-title h1 {
+    font-size: 42px;
+  }
+
+  .section h3 {
+    font-size: 22px;
+  }
+
+  .section p {
+    font-size: 18px;
+  }
 }
 </style>

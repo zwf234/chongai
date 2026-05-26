@@ -45,7 +45,7 @@
       <p>暂无宠物</p>
     </div>
 
-    <div style="height: 80px;"></div>
+    <div class="bottom-space"></div>
   </div>
 </template>
 
@@ -95,12 +95,12 @@ const getStatusText = (status) => {
 <style scoped>
 .pets-page {
   min-height: 100vh;
-  background: #fff8f5;
+  background: var(--bg-color);
   padding-bottom: 60px;
 }
 
 .header {
-  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
   padding: 30px 20px;
   color: #fff;
 }
@@ -132,12 +132,17 @@ const getStatusText = (status) => {
   border-radius: 12px;
   background: #f8f8f8;
   color: #666;
+  cursor: pointer;
   transition: all 0.3s ease;
+}
+
+.filter-item:hover {
+  background: #f0f0f0;
 }
 
 .filter-item.active {
   background: #fff0f0;
-  color: #ff9a9e;
+  color: var(--primary-color);
 }
 
 .filter-item i {
@@ -161,6 +166,13 @@ const getStatusText = (status) => {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pet-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .pet-image {
@@ -189,12 +201,12 @@ const getStatusText = (status) => {
 .pet-name {
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-color);
 }
 
 .pet-breed {
   font-size: 12px;
-  color: #999;
+  color: var(--text-muted);
   margin-top: 2px;
 }
 
@@ -212,7 +224,7 @@ const getStatusText = (status) => {
   align-items: center;
   justify-content: center;
   padding: 60px 20px;
-  color: #999;
+  color: var(--text-muted);
 }
 
 .empty-state i {
@@ -222,5 +234,103 @@ const getStatusText = (status) => {
 
 .empty-state p {
   font-size: 14px;
+}
+
+.bottom-space {
+  height: 80px;
+}
+
+@media screen and (min-width: 768px) {
+  .pets-page {
+    padding-top: 72px;
+  }
+
+  .header {
+    padding: 50px 30px;
+  }
+
+  .header h1 {
+    font-size: 40px;
+  }
+
+  .header p {
+    font-size: 18px;
+  }
+
+  .filter-bar {
+    padding: 20px 30px;
+    gap: 20px;
+  }
+
+  .filter-item {
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .filter-item i {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+
+  .filter-item span {
+    font-size: 16px;
+  }
+
+  .pet-grid {
+    padding: 20px 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .pet-image img {
+    height: 200px;
+  }
+
+  .pet-status {
+    padding: 4px 12px;
+    font-size: 12px;
+  }
+
+  .pet-info {
+    padding: 16px;
+  }
+
+  .pet-name {
+    font-size: 20px;
+  }
+
+  .pet-breed {
+    font-size: 14px;
+  }
+
+  .pet-meta {
+    font-size: 13px;
+    gap: 12px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .header {
+    padding: 60px 50px;
+  }
+
+  .header h1 {
+    font-size: 48px;
+  }
+
+  .filter-bar {
+    padding: 24px 50px;
+  }
+
+  .pet-grid {
+    padding: 24px 50px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .pet-image img {
+    height: 220px;
+  }
 }
 </style>

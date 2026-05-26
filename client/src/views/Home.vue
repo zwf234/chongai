@@ -32,7 +32,7 @@
     <div class="section">
       <div class="section-header">
         <h2>热门宠物</h2>
-        <span class="more" @click="goToPets">查看更多</span>
+        <span class="more" @click="goToPets">查看更多 →</span>
       </div>
       <div class="pet-list">
         <div class="pet-card" v-for="pet in pets" :key="pet.id" @click="goToPet(pet.id)">
@@ -67,6 +67,29 @@
       </div>
     </div>
 
+    <div class="section about">
+      <h2>关于我们</h2>
+      <p>宠爱到家是一个致力于为流浪宠物寻找温暖家的公益平台。我们相信每一只宠物都值得被爱，每一个生命都应该被尊重。通过我们的平台，您可以浏览待领养的宠物信息，提交领养申请，开启一段美好的陪伴之旅。</p>
+      <div class="about-stats">
+        <div class="about-stat">
+          <i class="fas fa-heart"></i>
+          <span>用心关爱</span>
+        </div>
+        <div class="about-stat">
+          <i class="fas fa-home"></i>
+          <span>温暖归宿</span>
+        </div>
+        <div class="about-stat">
+          <i class="fas fa-users"></i>
+          <span>爱心社区</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>© 2024 宠爱到家 - 让爱传递</p>
+    </div>
+
     <div style="height: 80px;"></div>
   </div>
 </template>
@@ -82,7 +105,7 @@ const stats = ref({ pets: 0, adoptions: 0, volunteers: 0 })
 
 onMounted(async () => {
   try {
-    const res = await api.getPets('all', 1, 4)
+    const res = await api.getPets('all', 1, 6)
     if (res.data.success) {
       pets.value = res.data.data
     }
@@ -104,11 +127,12 @@ const goToPet = (id) => {
 <style scoped>
 .home {
   min-height: 100vh;
-  background: #fff8f5;
+  background: var(--bg-color);
+  padding-top: 0;
 }
 
 .hero {
-  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
   padding: 40px 20px;
   border-radius: 0 0 30px 30px;
   position: relative;
@@ -118,6 +142,8 @@ const goToPet = (id) => {
 .hero-content {
   text-align: center;
   color: #fff;
+  position: relative;
+  z-index: 1;
 }
 
 .hero-content h1 {
@@ -134,7 +160,7 @@ const goToPet = (id) => {
 
 .hero-content .btn {
   background: #fff;
-  color: #ff9a9e;
+  color: var(--primary-color);
   font-weight: 600;
 }
 
@@ -166,12 +192,12 @@ const goToPet = (id) => {
 .stat-number {
   font-size: 28px;
   font-weight: 700;
-  color: #ff9a9e;
+  color: var(--primary-color);
 }
 
 .stat-label {
   font-size: 12px;
-  color: #999;
+  color: var(--text-muted);
   margin-top: 4px;
 }
 
@@ -189,12 +215,13 @@ const goToPet = (id) => {
 .section-header h2 {
   font-size: 20px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-color);
 }
 
 .section-header .more {
-  color: #ff9a9e;
+  color: var(--primary-color);
   font-size: 14px;
+  cursor: pointer;
 }
 
 .pet-card .pet-name {
@@ -205,7 +232,7 @@ const goToPet = (id) => {
 
 .pet-type {
   background: #fff0f0;
-  color: #ff9a9e;
+  color: var(--primary-color);
   padding: 2px 8px;
   border-radius: 10px;
   font-size: 12px;
@@ -225,5 +252,203 @@ const goToPet = (id) => {
   font-size: 14px;
   color: #666;
   line-height: 2;
+}
+
+.about {
+  background: #fff;
+  margin: 15px;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.about h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+.about p {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.8;
+  text-align: center;
+}
+
+.about-stats {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 20px;
+}
+
+.about-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--primary-color);
+}
+
+.about-stat i {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.about-stat span {
+  font-size: 14px;
+}
+
+.footer {
+  text-align: center;
+  padding: 24px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+@media screen and (min-width: 768px) {
+  .home {
+    padding-top: 72px;
+  }
+
+  .hero {
+    padding: 80px 30px;
+    border-radius: 0 0 50px 50px;
+  }
+
+  .hero-content h1 {
+    font-size: 56px;
+    margin-bottom: 16px;
+  }
+
+  .hero-content p {
+    font-size: 22px;
+    margin-bottom: 32px;
+  }
+
+  .hero-content .btn {
+    padding: 16px 48px;
+    font-size: 20px;
+  }
+
+  .hero-decoration {
+    font-size: 200px;
+    bottom: -50px;
+    right: -50px;
+  }
+
+  .stats {
+    max-width: 800px;
+    margin: -40px auto 30px;
+    padding: 30px;
+  }
+
+  .stat-item {
+    padding: 30px;
+    margin: 0 16px;
+  }
+
+  .stat-number {
+    font-size: 42px;
+  }
+
+  .stat-label {
+    font-size: 16px;
+  }
+
+  .section {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-header h2 {
+    font-size: 28px;
+  }
+
+  .section-header .more {
+    font-size: 18px;
+  }
+
+  .pet-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .pet-card img {
+    height: 280px;
+  }
+
+  .pet-card .pet-name {
+    font-size: 22px;
+  }
+
+  .pet-card .pet-meta {
+    font-size: 16px;
+  }
+
+  .pet-card .pet-desc {
+    font-size: 14px;
+  }
+
+  .tips {
+    max-width: 800px;
+    margin: 30px auto;
+  }
+
+  .tips li {
+    font-size: 16px;
+  }
+
+  .about {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 40px;
+  }
+
+  .about h2 {
+    font-size: 28px;
+  }
+
+  .about p {
+    font-size: 16px;
+  }
+
+  .footer {
+    padding: 40px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .hero {
+    padding: 100px 50px;
+  }
+
+  .hero-content h1 {
+    font-size: 72px;
+  }
+
+  .hero-content p {
+    font-size: 28px;
+  }
+
+  .pet-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .about-stats {
+    gap: 80px;
+  }
+
+  .about-stat i {
+    font-size: 36px;
+  }
+
+  .about-stat span {
+    font-size: 18px;
+  }
 }
 </style>
