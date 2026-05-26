@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宠物领养系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5efe7;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: #f5efe7;
+            min-height: 100vh;
+        }
+
+        /* 头部 */
+        .header {
+            background: #fff;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #ff6b6b, #ffa500);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .association-logo {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .association-logo i {
+            color: #2ecc71;
+            font-size: 16px;
+        }
+
+        .header-right {
+            color: #888;
+        }
+
+        /* 搜索栏 */
+        .search-bar {
+            margin: 16px;
+            background: #b8a082;
+            border-radius: 25px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .search-bar i {
+            color: #fff;
+        }
+
+        .search-bar input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-size: 15px;
+        }
+
+        .search-bar input::placeholder {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .search-bar .search-btn {
+            background: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #b8a082;
+        }
+
+        /* 轮播图 */
+        .carousel {
+            margin: 0 16px 20px;
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            height: 200px;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: #fff;
+        }
+
+        .carousel-overlay h2 {
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .carousel-overlay p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.9);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .carousel-nav.prev {
+            left: 10px;
+        }
+
+        .carousel-nav.next {
+            right: 10px;
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            display: flex;
+            gap: 6px;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+        }
+
+        .carousel-dot.active {
+            background: #fff;
+        }
+
+        /* 功能入口 */
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 0 16px 24px;
+        }
+
+        .function-item {
+            background: #fff;
+            border-radius: 16px;
+            padding: 20px 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .function-item:active {
+            transform: scale(0.98);
+        }
+
+        .function-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 10px;
+            background: #f5efe7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #b8a082;
+        }
+
+        .function-item span {
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* 待领养宠物 */
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px 16px;
+        }
+
+        .section-title h2 {
+            font-size: 18px;
+            color: #444;
+            font-weight: 600;
+        }
+
+        .section-title a {
+            font-size: 13px;
+            color: #b8a082;
+            text-decoration: none;
+        }
+
+        .pets-list {
+            padding: 0 16px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .pet-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .pet-image {
+            position: relative;
+            height: 160px;
+        }
+
+        .pet-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .pet-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #f9c846;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+        }
+
+        .pet-info {
+            padding: 12px;
+        }
+
+        .pet-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 6px;
+        }
+
+        .pet-detail {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .pet-detail i {
+            color: #b8a082;
+        }
+
+        /* 底部导航栏 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0 20px;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+            z-index: 100;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            color: #999;
+            font-size: 11px;
+            position: relative;
+        }
+
+        .nav-item.active {
+            color: #b8a082;
+        }
+
+        .nav-item.center {
+            position: relative;
+            top: -20px;
+        }
+
+        .nav-icon-center {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #b8a082, #a08868);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 26px;
+            box-shadow: 0 6px 16px rgba(184, 160, 130, 0.4);
+        }
+
+        .nav-item.center span {
+            margin-top: 6px;
+        }
+
+        .nav-icon {
+            font-size: 22px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="header-left">
+                <div class="logo">🐾</div>
+                <div class="association-logo">
+                    <i class="fas fa-leaf"></i>
+                    <span>中国小动物保护协会</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <i class="fas fa-th"></i>
+            </div>
+        </div>
+
+        <!-- 搜索栏 -->
+        <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="找你喜欢">
+            <div class="search-btn">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+        </div>
+
+        <!-- 轮播图 -->
+        <div class="carousel">
+            <div class="carousel-slide active">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20pet%20dog%20adoption%20warm%20family&image_size=square" alt="宠物领养">
+                <div class="carousel-overlay">
+                    <h2>周末来场玩宠吧！</h2>
+                    <p>宠物社交派对</p>
+                </div>
+            </div>
+            <div class="carousel-slide">
+                <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=healthy%20pet%20food%20fresh%20ingredients&image_size=square" alt="宠物鲜食">
+                <div class="carousel-overlay">
+                    <h2>新鲜食材，宠爱加倍</h2>
+                    <p>宠物鲜食限时优惠</p>
+                </div>
+            </div>
+            <button class="carousel-nav prev" onclick="prevSlide()">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carousel-nav next" onclick="nextSlide()">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <div class="carousel-dots">
+                <div class="carousel-dot active" onclick="goToSlide(0)"></div>
+                <div class="carousel-dot" onclick="goToSlide(1)"></div>
+            </div>
+        </div>
+
+        <!-- 功能入口 -->
+        <div class="function-grid">
+            <div class="function-item">
+                <div class="function-icon">
+                    <i class="fas fa-paw"></i>
+                </div>
+                <span>宠物领养</span>
+            </div>
+            <div class="function-item">
+                <div class="function-icon">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <span>宠物鲜食</span>
+            </div>
+            <div class="function-item">
+                <div class="function-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <span>宠物活动</span>
+            </div>
+            <div class="function-item">
+                <div class="function-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <span>上门喂养</span>
+            </div>
+            <div class="function-item">
+                <div class="function-icon">
+                    <i class="fas fa-cookie-bite"></i>
+                </div>
+                <span>宠物零食</span>
+            </div>
+            <div class="function-item">
+                <div class="function-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <span>宠物摄影</span>
+            </div>
+        </div>
+
+        <!-- 待领养宠物 -->
+        <div class="section-title">
+            <h2>待领养宠物</h2>
+            <a href="#">查看更多</a>
+        </div>
+        <div class="pets-list">
+            <div class="pet-card">
+                <div class="pet-image">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20white%20cat%20fluffy&image_size=square" alt="罐头">
+                    <div class="pet-tag">最多点击</div>
+                </div>
+                <div class="pet-info">
+                    <div class="pet-name">罐头</div>
+                    <div class="pet-detail">
+                        <i class="fas fa-circle" style="font-size: 6px;"></i>
+                        <span>布偶</span>
+                    </div>
+                    <div class="pet-detail">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>大兴医院</span>
+                    </div>
+                </div>
+            </div>
+            <div class="pet-card">
+                <div class="pet-image">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cute%20golden%20retriever%20puppy&image_size=square" alt="Admin">
+                </div>
+                <div class="pet-info">
+                    <div class="pet-name">Admin</div>
+                    <div class="pet-detail">
+                        <i class="fas fa-circle" style="font-size: 6px;"></i>
+                        <span>金毛</span>
+                    </div>
+                    <div class="pet-detail">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>北京市</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <i class="fas fa-home nav-icon"></i>
+            <span>首页</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-search nav-icon"></i>
+            <span>发现</span>
+        </a>
+        <a href="#" class="nav-item center">
+            <div class="nav-icon-center">
+                <i class="fas fa-paw"></i>
+            </div>
+            <span>宠窝</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-store nav-icon"></i>
+            <span>商城</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-user nav-icon"></i>
+            <span>我的</span>
+        </a>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.querySelectorAll('.carousel-dot');
+
+        function showSlide(n) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            currentSlide = (n + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        function goToSlide(n) {
+            showSlide(n);
+        }
+
+        // 自动轮播
+        setInterval(nextSlide, 4000);
+    </script>
+</body>
+</html>
