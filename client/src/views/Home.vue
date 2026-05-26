@@ -1,208 +1,361 @@
 <template>
-  <div class="home">
-    <div class="hero">
-      <div class="hero-content">
-        <h1>宠爱到家</h1>
-        <p>给TA一个温暖的家</p>
-        <button class="btn btn-primary" @click="goToPets">
-          <i class="fas fa-search"></i>
-          寻找萌宠
+  <div class="home-page">
+    <div class="header-section">
+      <div class="header-top">
+        <div class="logo-area">
+          <div class="logo-icon">
+            <span class="paw-icon">🐾</span>
+            <span class="logo-text">宠宠</span>
+          </div>
+          <div class="partner-badge">
+            <span>中国小动物保护协会</span>
+          </div>
+        </div>
+        <button class="menu-btn" @click="toggleMenu">
+          <span></span>
+          <span></span>
+          <span></span>
         </button>
       </div>
-      <div class="hero-decoration">
-        <div class="pet-icon">🐾</div>
+      
+      <div class="search-container">
+        <div class="search-bar">
+          <i class="icon-search">🔍</i>
+          <input type="text" v-model="searchQuery" placeholder="找你喜欢" @keyup.enter="handleSearch" />
+          <button class="search-btn" @click="handleSearch">→</button>
+        </div>
       </div>
     </div>
 
-    <div class="stats">
-      <div class="stat-item">
-        <div class="stat-number">{{ stats.pets }}</div>
-        <div class="stat-label">待领养宠物</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">{{ stats.adoptions }}</div>
-        <div class="stat-label">成功领养</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number">{{ stats.volunteers }}</div>
-        <div class="stat-label">爱心志愿者</div>
+    <div class="banner-section">
+      <div class="banner-card">
+        <div class="banner-image">
+          <img :src="bannerImage" alt="领养日活动" />
+          <div class="banner-overlay">
+            <span class="banner-text">来和毛孩玩耍吧!</span>
+          </div>
+        </div>
+        <div class="banner-info">
+          <span class="banner-tag">西安市官方领养日</span>
+        </div>
       </div>
     </div>
 
-    <div class="section">
+    <div class="stats-section">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">{{ stats.totalPets }}</div>
+          <div class="stat-label">待领养</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-number">{{ stats.adopted }}</div>
+          <div class="stat-label">已领养</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <div class="stat-number">{{ stats.shelters }}</div>
+          <div class="stat-label">合作机构</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pets-section">
       <div class="section-header">
-        <h2>热门宠物</h2>
-        <span class="more" @click="goToPets">查看更多 →</span>
+        <h2 class="section-title">附近的小伙伴</h2>
+        <button class="view-all" @click="goToPets">查看全部</button>
       </div>
-      <div class="pet-list">
-        <div class="pet-card" v-for="pet in pets" :key="pet.id" @click="goToPet(pet.id)">
-          <img :src="pet.image" :alt="pet.name" />
-          <div class="pet-info">
-            <div class="pet-name">{{ pet.name }}
-              <span class="pet-type">{{ pet.type }}</span>
+      
+      <div class="pets-grid">
+        <div 
+          v-for="pet in pets" 
+          :key="pet.id" 
+          class="pet-card"
+          @click="goToDetail(pet.id)"
+        >
+          <div class="pet-image-wrapper">
+            <img :src="pet.image" :alt="pet.name" class="pet-image" />
+          </div>
+          <div class="pet-card-body">
+            <div class="pet-name-row">
+              <span class="pet-name">{{ pet.name }}</span>
+              <span class="pet-age">{{ pet.age }}</span>
             </div>
-            <div class="pet-meta">
-              <span><i class="fas fa-calendar"></i>{{ pet.age }}岁</span>
-              <span><i class="fas fa-map-marker-alt"></i>{{ pet.location }}</span>
+            <div class="pet-meta-row">
+              <span class="pet-type" :class="pet.type === 'dog' ? 'dog' : 'cat'">
+                <span class="type-dot"></span>
+                {{ pet.type === 'dog' ? '狗狗' : '猫咪' }}
+              </span>
+              <span class="pet-location">📍 {{ pet.location }}</span>
             </div>
-            <div class="pet-desc">{{ pet.description }}</div>
+            <div class="pet-distance">
+              <span class="distance-icon">📍</span>
+              <span class="distance-text">&lt;100m</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="section tips">
-      <div class="card">
-        <div class="card-header">
-          <h3><i class="fas fa-info-circle"></i> 领养小贴士</h3>
-        </div>
-        <div class="card-body">
-          <ul>
-            <li>• 领养前请确保有足够的时间和精力照顾宠物</li>
-            <li>• 请与家人商量好，确保全家都同意领养</li>
-            <li>• 领养后请负责到底，不要随意抛弃</li>
-            <li>• 定期带宠物做体检和疫苗接种</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="section about">
-      <h2>关于我们</h2>
-      <p>宠爱到家是一个致力于为流浪宠物寻找温暖家的公益平台。我们相信每一只宠物都值得被爱，每一个生命都应该被尊重。通过我们的平台，您可以浏览待领养的宠物信息，提交领养申请，开启一段美好的陪伴之旅。</p>
-      <div class="about-stats">
-        <div class="about-stat">
-          <i class="fas fa-heart"></i>
-          <span>用心关爱</span>
-        </div>
-        <div class="about-stat">
-          <i class="fas fa-home"></i>
-          <span>温暖归宿</span>
-        </div>
-        <div class="about-stat">
-          <i class="fas fa-users"></i>
-          <span>爱心社区</span>
-        </div>
+    <div class="about-section">
+      <div class="about-card">
+        <h3 class="about-title">关于我们</h3>
+        <p class="about-content">
+          宠爱到家致力于为流浪动物寻找温暖的家。我们与多家动物保护机构合作，提供安全可靠的领养服务。每一个生命都值得被爱，让我们一起为毛孩子们创造美好的未来。
+        </p>
+        <button class="about-btn">了解更多</button>
       </div>
     </div>
 
     <div class="footer">
-      <p>© 2024 宠爱到家 - 让爱传递</p>
+      <p class="footer-text">© 2024 宠爱到家 · 让爱不再流浪</p>
     </div>
-
-    <div style="height: 80px;"></div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { api } from '../api'
 
 const router = useRouter()
-const pets = ref([])
-const stats = ref({ pets: 0, adoptions: 0, volunteers: 0 })
+const searchQuery = ref('')
 
-onMounted(async () => {
-  try {
-    const res = await api.getPets('all', 1, 6)
-    if (res.data.success) {
-      pets.value = res.data.data
-    }
-  } catch (error) {
-    console.error('Failed to fetch pets:', error)
-  }
-  stats.value = { pets: 8, adoptions: 128, volunteers: 56 }
+const bannerImage = 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cute%20corgi%20dog%20playing%20with%20owner%20on%20carpet%20warm%20lighting%20cozy%20home&image_size=landscape_16_9'
+
+const stats = reactive({
+  totalPets: 128,
+  adopted: 356,
+  shelters: 24
 })
+
+const pets = reactive([
+  { id: 1, name: 'Chidi', age: '2岁', type: 'cat', location: '西安市.北大街', image: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=beautiful%20fluffy%20gray%20cat%20portrait%20elegant%20pose&image_size=square_hd' },
+  { id: 2, name: 'Yael', age: '3岁', type: 'dog', location: '西安市.北大街', image: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cute%20beagle%20dog%20lying%20down%20happy%20expression&image_size=square_hd' },
+  { id: 3, name: 'Bella', age: '1岁', type: 'dog', location: '西安市.南大街', image: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=white%20fluffy%20dog%20being%20squeezed%20cute%20face&image_size=square_hd' },
+  { id: 4, name: 'Mochi', age: '2岁', type: 'cat', location: '西安市.东大街', image: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=gray%20british%20shorthair%20cat%20on%20grass%20peaceful&image_size=square_hd' }
+])
+
+const toggleMenu = () => {
+  console.log('Toggle menu')
+}
+
+const handleSearch = () => {
+  if (searchQuery.value) {
+    router.push({ path: '/pets', query: { q: searchQuery.value } })
+  }
+}
 
 const goToPets = () => {
   router.push('/pets')
 }
 
-const goToPet = (id) => {
+const goToDetail = (id) => {
   router.push(`/pet/${id}`)
 }
 </script>
 
 <style scoped>
-.home {
+.home-page {
   min-height: 100vh;
   background: var(--bg-color);
-  padding-top: 0;
+  padding-bottom: 80px;
 }
 
-.hero {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-  padding: 40px 20px;
-  border-radius: 0 0 30px 30px;
-  position: relative;
-  overflow: hidden;
+.header-section {
+  padding: 20px 15px;
+  background: linear-gradient(180deg, rgba(92, 77, 70, 0.1) 0%, transparent 100%);
 }
 
-.hero-content {
-  text-align: center;
-  color: #fff;
-  position: relative;
-  z-index: 1;
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
-.hero-content h1 {
-  font-size: 36px;
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.paw-icon {
+  font-size: 28px;
+}
+
+.logo-text {
+  font-size: 24px;
   font-weight: 700;
-  margin-bottom: 8px;
+  color: var(--primary-color);
 }
 
-.hero-content p {
+.partner-badge {
+  background: rgba(92, 77, 70, 0.1);
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.menu-btn {
+  width: 36px;
+  height: 36px;
+  background: var(--bg-card);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.menu-btn span {
+  width: 18px;
+  height: 2px;
+  background: var(--primary-color);
+  border-radius: 1px;
+}
+
+.search-container {
+  margin-top: 10px;
+}
+
+.search-bar {
+  background: var(--primary-color);
+  border-radius: 35px;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+}
+
+.icon-search {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 18px;
+  margin-right: 12px;
+}
+
+.search-bar input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #fff;
   font-size: 16px;
-  opacity: 0.9;
+  outline: none;
+}
+
+.search-bar input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.search-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.banner-section {
+  padding: 0 15px;
   margin-bottom: 24px;
 }
 
-.hero-content .btn {
-  background: #fff;
-  color: var(--primary-color);
-  font-weight: 600;
+.banner-card {
+  background: var(--bg-card);
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
-.hero-decoration {
+.banner-image {
+  position: relative;
+  width: 100%;
+  height: 200px;
+}
+
+.banner-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner-overlay {
   position: absolute;
-  bottom: -20px;
-  right: -20px;
-  font-size: 120px;
-  opacity: 0.2;
+  top: 20px;
+  left: 20px;
 }
 
-.stats {
+.banner-text {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+}
+
+.banner-info {
+  padding: 16px 20px;
+}
+
+.banner-tag {
+  font-size: 14px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.stats-section {
+  padding: 0 15px;
+  margin-bottom: 24px;
+}
+
+.stats-grid {
   display: flex;
-  justify-content: space-around;
-  padding: 24px 15px;
-  margin-top: -20px;
+  background: var(--bg-card);
+  border-radius: 20px;
+  padding: 24px 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .stat-item {
-  background: #fff;
-  padding: 20px;
-  border-radius: 16px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   flex: 1;
-  margin: 0 8px;
+  text-align: center;
 }
 
 .stat-number {
   font-size: 28px;
   font-weight: 700;
   color: var(--primary-color);
+  margin-bottom: 4px;
 }
 
 .stat-label {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-muted);
-  margin-top: 4px;
 }
 
-.section {
-  padding: 15px;
+.stat-divider {
+  width: 1px;
+  background: var(--border-color);
+  margin: 0 10px;
+}
+
+.pets-section {
+  padding: 0 15px;
+  margin-bottom: 24px;
 }
 
 .section-header {
@@ -212,243 +365,304 @@ const goToPet = (id) => {
   margin-bottom: 16px;
 }
 
-.section-header h2 {
-  font-size: 20px;
+.section-title {
+  font-size: 18px;
   font-weight: 600;
   color: var(--text-color);
 }
 
-.section-header .more {
-  color: var(--primary-color);
+.view-all {
   font-size: 14px;
+  color: var(--text-muted);
+  background: none;
+  border: none;
   cursor: pointer;
 }
 
-.pet-card .pet-name {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.pets-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
 }
 
-.pet-type {
-  background: #fff0f0;
-  color: var(--primary-color);
-  padding: 2px 8px;
-  border-radius: 10px;
-  font-size: 12px;
-}
-
-.tips {
-  padding-bottom: 30px;
-}
-
-.tips ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.tips li {
-  font-size: 14px;
-  color: #666;
-  line-height: 2;
-}
-
-.about {
-  background: #fff;
-  margin: 15px;
-  padding: 24px;
-  border-radius: 16px;
+.pet-card {
+  background: var(--bg-card);
+  border-radius: 20px;
+  overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.about h2 {
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--text-color);
-  margin-bottom: 12px;
-  text-align: center;
+.pet-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-.about p {
-  font-size: 14px;
-  color: #666;
-  line-height: 1.8;
-  text-align: center;
+.pet-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 160px;
 }
 
-.about-stats {
+.pet-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px 20px 0 0;
+}
+
+.pet-card-body {
+  padding: 12px;
+}
+
+.pet-name-row {
   display: flex;
-  justify-content: center;
-  gap: 40px;
-  margin-top: 20px;
-}
-
-.about-stat {
-  display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  color: var(--primary-color);
-}
-
-.about-stat i {
-  font-size: 24px;
   margin-bottom: 8px;
 }
 
-.about-stat span {
-  font-size: 14px;
+.pet-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-color);
 }
 
-.footer {
-  text-align: center;
-  padding: 24px;
+.pet-age {
+  font-size: 12px;
   color: var(--text-muted);
+}
+
+.pet-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.pet-type {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: 12px;
 }
 
+.type-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.pet-type.dog .type-dot {
+  background: var(--dog-color);
+}
+
+.pet-type.cat .type-dot {
+  background: var(--cat-color);
+}
+
+.pet-location {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.pet-distance {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.distance-icon {
+  font-size: 12px;
+}
+
+.distance-text {
+  font-size: 12px;
+  color: var(--accent-color);
+  font-weight: 500;
+}
+
+.about-section {
+  padding: 0 15px;
+  margin-bottom: 24px;
+}
+
+.about-card {
+  background: var(--bg-card);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.about-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 12px;
+}
+
+.about-content {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.about-btn {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.about-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(92, 77, 70, 0.3);
+}
+
+.footer {
+  padding: 20px 15px;
+  text-align: center;
+}
+
+.footer-text {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
 @media screen and (min-width: 768px) {
-  .home {
-    padding-top: 72px;
+  .home-page {
+    padding-top: 80px;
+    padding-bottom: 30px;
   }
 
-  .hero {
-    padding: 80px 30px;
-    border-radius: 0 0 50px 50px;
-  }
-
-  .hero-content h1 {
-    font-size: 56px;
-    margin-bottom: 16px;
-  }
-
-  .hero-content p {
-    font-size: 22px;
-    margin-bottom: 32px;
-  }
-
-  .hero-content .btn {
-    padding: 16px 48px;
-    font-size: 20px;
-  }
-
-  .hero-decoration {
-    font-size: 200px;
-    bottom: -50px;
-    right: -50px;
-  }
-
-  .stats {
-    max-width: 800px;
-    margin: -40px auto 30px;
+  .header-section {
     padding: 30px;
   }
 
-  .stat-item {
-    padding: 30px;
-    margin: 0 16px;
+  .header-top {
+    max-width: 1200px;
+    margin: 0 auto 24px;
+  }
+
+  .search-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .search-bar {
+    padding: 16px 24px;
+  }
+
+  .search-bar input {
+    font-size: 18px;
+  }
+
+  .banner-section {
+    padding: 0 30px;
+    max-width: 1200px;
+    margin: 0 auto 30px;
+  }
+
+  .banner-image {
+    height: 280px;
+  }
+
+  .banner-text {
+    font-size: 32px;
+  }
+
+  .stats-section {
+    padding: 0 30px;
+    max-width: 1200px;
+    margin: 0 auto 30px;
+  }
+
+  .stats-grid {
+    padding: 32px;
   }
 
   .stat-number {
-    font-size: 42px;
+    font-size: 36px;
   }
 
   .stat-label {
     font-size: 16px;
   }
 
-  .section {
-    padding: 30px;
+  .stat-divider {
+    margin: 0 20px;
+  }
+
+  .pets-section {
+    padding: 0 30px;
     max-width: 1200px;
-    margin: 0 auto;
+    margin: 0 auto 30px;
   }
 
-  .section-header h2 {
-    font-size: 28px;
-  }
-
-  .section-header .more {
-    font-size: 18px;
-  }
-
-  .pet-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-
-  .pet-card img {
-    height: 280px;
-  }
-
-  .pet-card .pet-name {
+  .section-title {
     font-size: 22px;
   }
 
-  .pet-card .pet-meta {
+  .pets-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .pet-image-wrapper {
+    height: 200px;
+  }
+
+  .about-section {
+    padding: 0 30px;
+    max-width: 1200px;
+    margin: 0 auto 30px;
+  }
+
+  .about-card {
+    padding: 32px;
+  }
+
+  .about-title {
+    font-size: 22px;
+  }
+
+  .about-content {
     font-size: 16px;
-  }
-
-  .pet-card .pet-desc {
-    font-size: 14px;
-  }
-
-  .tips {
-    max-width: 800px;
-    margin: 30px auto;
-  }
-
-  .tips li {
-    font-size: 16px;
-  }
-
-  .about {
-    max-width: 800px;
-    margin: 30px auto;
-    padding: 40px;
-  }
-
-  .about h2 {
-    font-size: 28px;
-  }
-
-  .about p {
-    font-size: 16px;
-  }
-
-  .footer {
-    padding: 40px;
-    font-size: 14px;
   }
 }
 
 @media screen and (min-width: 1024px) {
-  .hero {
-    padding: 100px 50px;
+  .header-section {
+    padding: 40px 50px;
   }
 
-  .hero-content h1 {
-    font-size: 72px;
+  .banner-image {
+    height: 320px;
   }
 
-  .hero-content p {
-    font-size: 28px;
+  .banner-text {
+    font-size: 40px;
   }
 
-  .pet-list {
-    grid-template-columns: repeat(3, 1fr);
+  .stats-section,
+  .banner-section,
+  .pets-section,
+  .about-section {
+    padding: 0 50px;
   }
 
-  .about-stats {
-    gap: 80px;
+  .pets-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 
-  .about-stat i {
-    font-size: 36px;
-  }
-
-  .about-stat span {
-    font-size: 18px;
+  .pet-image-wrapper {
+    height: 220px;
   }
 }
 </style>

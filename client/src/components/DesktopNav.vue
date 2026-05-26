@@ -1,41 +1,53 @@
 <template>
   <div class="desktop-nav">
     <div class="desktop-nav-content">
-      <router-link to="/" class="desktop-nav-logo">
-        <i class="fas fa-paw"></i>
-        <span>宠爱到家</span>
-      </router-link>
-
-      <div class="desktop-nav-links">
-        <router-link to="/" class="desktop-nav-link" :class="{ active: currentRoute === 'Home' }">
-          <i class="fas fa-home"></i>
-          <span>首页</span>
-        </router-link>
-        <router-link to="/pets" class="desktop-nav-link" :class="{ active: currentRoute === 'Pets' }">
-          <i class="fas fa-paw"></i>
-          <span>宠物列表</span>
-        </router-link>
-        <router-link to="/favorites" class="desktop-nav-link" :class="{ active: currentRoute === 'Favorites' }">
-          <i class="fas fa-heart"></i>
-          <span>我的收藏</span>
-        </router-link>
-        <router-link to="/applications" class="desktop-nav-link" :class="{ active: currentRoute === 'Applications' }">
-          <i class="fas fa-file-alt"></i>
-          <span>领养记录</span>
-        </router-link>
+      <div class="desktop-nav-left">
+        <a href="/" class="desktop-nav-logo">
+          <span class="logo-icon">🐾</span>
+          <span class="logo-text">宠爱到家</span>
+        </a>
       </div>
-
-      <div class="desktop-nav-user">
-        <template v-if="user">
-          <span class="user-name">{{ user.name }}</span>
-          <div class="avatar">
-            <i class="fas fa-user"></i>
+      
+      <div class="desktop-nav-center">
+        <a 
+          :class="['desktop-nav-link', { active: currentPath === '/' }]"
+          href="/"
+        >
+          首页
+        </a>
+        <a 
+          :class="['desktop-nav-link', { active: currentPath === '/pets' }]"
+          href="/pets"
+        >
+          宠物列表
+        </a>
+        <a 
+          :class="['desktop-nav-link', { active: currentPath === '/favorites' }]"
+          href="/favorites"
+        >
+          我的收藏
+        </a>
+        <a 
+          :class="['desktop-nav-link', { active: currentPath === '/applications' }]"
+          href="/applications"
+        >
+          领养记录
+        </a>
+      </div>
+      
+      <div class="desktop-nav-right">
+        <template v-if="state.user">
+          <div class="user-info">
+            <span class="user-name">{{ state.user.name }}</span>
+            <div class="avatar">
+              <span>👤</span>
+            </div>
           </div>
-          <button class="btn btn-secondary logout-btn" @click="handleLogout">退出</button>
+          <button class="logout-btn" @click="handleLogout">退出</button>
         </template>
         <template v-else>
-          <router-link to="/login" class="btn btn-primary">登录</router-link>
-          <router-link to="/register" class="btn btn-secondary">注册</router-link>
+          <a href="/login" class="nav-btn secondary">登录</a>
+          <a href="/register" class="nav-btn primary">注册</a>
         </template>
       </div>
     </div>
@@ -43,23 +55,32 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useStore } from '../store'
 
-const router = useRouter()
 const route = useRoute()
-const { methods } = useStore()
+const router = useRouter()
 
-const currentRoute = computed(() => route.name)
-const user = computed(() => methods.getUser())
+const { state } = useStore()
+const currentPath = ref(route.path)
+
+const handleRouteChange = () => {
+  currentPath.value = route.path
+}
 
 const handleLogout = () => {
-  if (confirm('确定要退出登录吗？')) {
-    methods.logout()
-    router.push('/')
-  }
+  state.user = null
+  router.push('/login')
 }
+
+onMounted(() => {
+  router.afterEach(handleRouteChange)
+})
+
+onUnmounted(() => {
+  router.afterEach(() => {})
+})
 </script>
 
 <style scoped>
@@ -76,85 +97,147 @@ const handleLogout = () => {
 }
 
 .desktop-nav-content {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+.desktop-nav-left {
+  flex: 1;
+}
+
 .desktop-nav-logo {
   display: flex;
   align-items: center;
+  gap: 8px;
   text-decoration: none;
   color: var(--primary-color);
 }
 
-.desktop-nav-logo i {
+.logo-icon {
   font-size: 28px;
-  margin-right: 8px;
 }
 
-.desktop-nav-logo span {
-  font-size: 20px;
-  font-weight: 600;
+.logo-text {
+  font-size: 22px;
+  font-weight: 700;
 }
 
-.desktop-nav-links {
+.desktop-nav-center {
+  flex: 2;
   display: flex;
-  gap: 32px;
+  justify-content: center;
+  gap: 40px;
 }
 
 .desktop-nav-link {
-  display: flex;
-  align-items: center;
-  gap: 6px;
   text-decoration: none;
-  color: #666;
+  color: var(--text-muted);
   font-size: 16px;
   font-weight: 500;
   transition: color 0.3s ease;
+  position: relative;
 }
 
-.desktop-nav-link:hover {
-  color: var(--primary-color);
-}
-
+.desktop-nav-link:hover,
 .desktop-nav-link.active {
   color: var(--primary-color);
 }
 
-.desktop-nav-link i {
-  font-size: 14px;
+.desktop-nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 3px;
+  background: var(--primary-color);
+  border-radius: 2px;
 }
 
-.desktop-nav-user {
+.desktop-nav-right {
+  flex: 1;
   display: flex;
+  justify-content: flex-end;
   align-items: center;
   gap: 16px;
 }
 
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .user-name {
-  font-size: 16px;
-  color: #333;
+  font-size: 14px;
+  color: var(--text-color);
   font-weight: 500;
 }
 
 .avatar {
   width: 40px;
   height: 40px;
-  background: #fff0f0;
+  background: var(--bg-color);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--primary-color);
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .logout-btn {
-  padding: 8px 16px;
+  padding: 10px 20px;
+  background: transparent;
+  border: 2px solid var(--primary-color);
+  border-radius: 20px;
+  color: var(--primary-color);
   font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(92, 77, 70, 0.1);
+}
+
+.nav-btn {
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.nav-btn.primary {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+.nav-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(92, 77, 70, 0.3);
+}
+
+.nav-btn.secondary {
+  background: transparent;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+}
+
+.nav-btn.secondary:hover {
+  background: rgba(92, 77, 70, 0.1);
+}
+
+@media screen and (max-width: 768px) {
+  .desktop-nav {
+    display: none;
+  }
 }
 
 @media screen and (min-width: 1024px) {
@@ -162,17 +245,12 @@ const handleLogout = () => {
     padding: 20px 50px;
   }
 
-  .desktop-nav-links {
-    gap: 48px;
+  .desktop-nav-center {
+    gap: 50px;
   }
 
   .desktop-nav-link {
     font-size: 18px;
-    gap: 8px;
-  }
-
-  .desktop-nav-link i {
-    font-size: 16px;
   }
 }
 </style>

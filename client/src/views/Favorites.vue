@@ -1,98 +1,74 @@
 <template>
   <div class="favorites-page">
-    <div class="header">
-      <h1>我的收藏</h1>
+    <div class="page-header">
+      <h1 class="page-title">我的收藏</h1>
+      <p class="page-subtitle">收藏喜欢的宠物</p>
     </div>
 
-    <div v-if="!user" class="login-prompt">
-      <div class="icon">
-        <i class="fas fa-heart"></i>
-      </div>
-      <p>登录后查看收藏</p>
-      <button class="btn btn-primary" @click="goToLogin">立即登录</button>
-    </div>
-
-    <div v-else-if="favorites.length === 0" class="empty-state">
-      <div class="icon">
-        <i class="fas fa-heart-broken"></i>
-      </div>
-      <p>还没有收藏任何宠物</p>
-      <button class="btn btn-secondary" @click="goToPets">去看看</button>
-    </div>
-
-    <div v-else class="pet-list">
-      <div class="pet-card" v-for="pet in favorites" :key="pet.id">
-        <img :src="pet.image" :alt="pet.name" @click="goToPet(pet.id)" />
-        <div class="pet-info">
-          <div class="pet-header">
-            <div class="pet-name">{{ pet.name }}</div>
-            <button class="remove-btn" @click="removeFavorite(pet.id)">
-              <i class="fas fa-heart active"></i>
+    <div class="favorites-content">
+      <div v-if="favorites.length > 0" class="favorites-grid">
+        <div 
+          v-for="pet in favorites" 
+          :key="pet.id" 
+          class="pet-card"
+          @click="goToDetail(pet.id)"
+        >
+          <div class="pet-image-wrapper">
+            <img :src="pet.image" :alt="pet.name" class="pet-image" />
+            <button class="remove-btn" @click.stop="removeFavorite(pet.id)">
+              ❌
             </button>
           </div>
-          <div class="pet-meta">
-            <span>{{ pet.type }} · {{ pet.breed }}</span>
-            <span>{{ pet.location }}</span>
+          <div class="pet-card-body">
+            <div class="pet-name-row">
+              <span class="pet-name">{{ pet.name }}</span>
+              <span class="pet-age">{{ pet.age }}</span>
+            </div>
+            <div class="pet-meta-row">
+              <span class="pet-type" :class="pet.type === 'dog' ? 'dog' : 'cat'">
+                <span class="type-dot"></span>
+                {{ pet.type === 'dog' ? '狗狗' : '猫咪' }}
+              </span>
+              <span class="pet-location">📍 {{ pet.location }}</span>
+            </div>
+            <div class="pet-distance">
+              <span class="distance-icon">📍</span>
+              <span class="distance-text">&lt;100m</span>
+            </div>
           </div>
-          <div class="pet-desc">{{ pet.description }}</div>
         </div>
       </div>
-    </div>
 
-    <div style="height: 80px;"></div>
+      <div v-else class="empty-state">
+        <div class="empty-icon">🤍</div>
+        <p class="empty-text">还没有收藏任何宠物</p>
+        <button class="empty-btn" @click="goToPets">去看看</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { api } from '../api'
-import { useStore } from '../store'
 
 const router = useRouter()
-const { state, methods } = useStore()
-const favorites = ref([])
 
-const user = computed(() => methods.getUser())
+const favorites = ref([
+  { id: 1, name: 'Chidi', age: '2岁', type: 'cat', location: '西安市.北大街', image: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=beautiful%20fluffy%20gray%20cat%20portrait%20elegant%20pose&image_size=square_hd' },
+  { id: 2, name: 'Yael', age: '3岁', type: 'dog', location: '西安市.北大街', image: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=cute%20beagle%20dog%20lying%20down%20happy%20expression&image_size=square_hd' }
+])
 
-onMounted(async () => {
-  if (user.value) {
-    try {
-      const res = await api.getFavorites(user.value.id)
-      if (res.data.success) {
-        favorites.value = res.data.data
-        methods.setFavorites(res.data.data)
-      }
-    } catch (error) {
-      console.error('Failed to fetch favorites:', error)
-    }
-  }
-})
+const goToDetail = (id) => {
+  router.push(`/pet/${id}`)
+}
 
-const goToLogin = () => {
-  router.push('/login')
+const removeFavorite = (id) => {
+  favorites.value = favorites.value.filter(pet => pet.id !== id)
 }
 
 const goToPets = () => {
   router.push('/pets')
-}
-
-const goToPet = (id) => {
-  router.push(`/pet/${id}`)
-}
-
-const removeFavorite = async (petId) => {
-  if (!user.value) return
-
-  try {
-    const res = await api.removeFavorite(user.value.id, petId)
-    if (res.data.success) {
-      methods.removeFavorite(petId)
-      favorites.value = favorites.value.filter(f => f.id !== petId)
-    }
-  } catch (error) {
-    console.error('Failed to remove favorite:', error)
-  }
 }
 </script>
 
@@ -100,137 +76,224 @@ const removeFavorite = async (petId) => {
 .favorites-page {
   min-height: 100vh;
   background: var(--bg-color);
+  padding-bottom: 80px;
 }
 
-.header {
+.page-header {
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
-  padding: 30px 20px;
-  color: #fff;
+  padding: 30px 15px;
+  border-radius: 0 0 30px 30px;
 }
 
-@media screen and (min-width: 768px) {
-  .favorites-page {
-    padding-top: 72px;
-  }
-
-  .header {
-    padding: 50px 30px;
-  }
-
-  .header h1 {
-    font-size: 36px;
-  }
-}
-
-.header h1 {
+.page-title {
   font-size: 28px;
   font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
 }
 
-.login-prompt,
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 60px 20px;
+.page-subtitle {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
 }
 
-.icon {
-  width: 80px;
-  height: 80px;
-  background: #fff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+.favorites-content {
+  padding: 20px 15px;
 }
 
-.icon i {
-  font-size: 36px;
-  color: #ff9a9e;
-}
-
-.login-prompt p,
-.empty-state p {
-  font-size: 16px;
-  color: #666;
-  margin-bottom: 20px;
-}
-
-.pet-list {
-  padding: 15px;
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
 }
 
 .pet-card {
-  background: #fff;
-  border-radius: 16px;
+  background: var(--bg-card);
+  border-radius: 20px;
   overflow: hidden;
-  margin-bottom: 12px;
-  display: flex;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.pet-card img {
-  width: 120px;
-  height: 120px;
+.pet-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.pet-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 160px;
+}
+
+.pet-image {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  flex-shrink: 0;
+  border-radius: 20px 20px 0 0;
 }
 
-.pet-info {
+.remove-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.pet-card-body {
   padding: 12px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
 }
 
-.pet-header {
+.pet-name-row {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
 .pet-name {
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: var(--text-color);
 }
 
-.remove-btn {
-  background: #fff0f0;
-  border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+.pet-age {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.pet-meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.pet-type {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 4px;
+  font-size: 12px;
 }
 
-.remove-btn i {
+.type-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.pet-type.dog .type-dot {
+  background: var(--dog-color);
+}
+
+.pet-type.cat .type-dot {
+  background: var(--cat-color);
+}
+
+.pet-location {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.pet-distance {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.distance-icon {
+  font-size: 12px;
+}
+
+.distance-text {
+  font-size: 12px;
+  color: var(--accent-color);
+  font-weight: 500;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-icon {
+  font-size: 60px;
+  margin-bottom: 20px;
+}
+
+.empty-text {
+  font-size: 16px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.empty-btn {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 25px;
   font-size: 14px;
-  color: #ff9a9e;
+  cursor: pointer;
 }
 
-.pet-meta {
-  font-size: 12px;
-  color: #999;
+@media screen and (min-width: 768px) {
+  .favorites-page {
+    padding-top: 80px;
+    padding-bottom: 30px;
+  }
+
+  .page-header {
+    padding: 40px 30px;
+  }
+
+  .page-title {
+    font-size: 36px;
+  }
+
+  .page-subtitle {
+    font-size: 16px;
+  }
+
+  .favorites-content {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .favorites-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .pet-image-wrapper {
+    height: 200px;
+  }
 }
 
-.pet-meta span {
-  margin-right: 8px;
-}
+@media screen and (min-width: 1024px) {
+  .page-header {
+    padding: 50px 50px;
+  }
 
-.pet-desc {
-  font-size: 12px;
-  color: #666;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  .favorites-content {
+    padding: 30px 50px;
+  }
+
+  .favorites-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .pet-image-wrapper {
+    height: 220px;
+  }
 }
 </style>

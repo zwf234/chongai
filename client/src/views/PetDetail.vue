@@ -1,483 +1,678 @@
 <template>
-  <div class="pet-detail">
-    <div class="back-btn" @click="goBack">
-      <i class="fas fa-arrow-left"></i>
+  <div class="pet-detail-page">
+    <div class="detail-header">
+      <button class="back-btn" @click="goBack">←</button>
+      <button class="share-btn">⋮</button>
     </div>
 
-    <div class="pet-main">
-      <div class="pet-image-wrapper">
-        <img :src="pet.image" :alt="pet.name" />
-        <div class="pet-status-badge" :class="getStatusClass(pet.status)">
-          {{ getStatusText(pet.status) }}
+    <div class="pet-main-content">
+      <div class="pet-image-container">
+        <img :src="pet.image" :alt="pet.name" class="pet-main-image" />
+        <div class="image-overlay">
+          <span class="pet-type-badge" :class="pet.type === 'dog' ? 'dog' : 'cat'">
+            {{ pet.type === 'dog' ? '🐕 狗狗' : '🐱 猫咪' }}
+          </span>
         </div>
       </div>
 
-      <div class="pet-content">
-        <div class="pet-header">
-          <div class="pet-title">
-            <h1>{{ pet.name }}</h1>
-            <span class="pet-type">{{ pet.type }} · {{ pet.breed }}</span>
+      <div class="pet-info-section">
+        <div class="pet-title-row">
+          <div class="pet-name-wrapper">
+            <h1 class="pet-name">{{ pet.name }}</h1>
+            <span class="pet-age">{{ pet.age }}</span>
           </div>
-          <div class="favorite-btn" @click="toggleFavorite">
-            <i class="fas fa-heart" :class="{ active: isFavorited }"></i>
-          </div>
-        </div>
-
-        <div class="pet-meta-row">
-          <div class="meta-item">
-            <i class="fas fa-calendar"></i>
-            <span>{{ pet.age }}岁</span>
-          </div>
-          <div class="meta-item">
-            <i class="fas fa-venus-mars"></i>
-            <span>{{ pet.gender }}</span>
-          </div>
-          <div class="meta-item">
-            <i class="fas fa-weight"></i>
-            <span>{{ pet.weight }}kg</span>
-          </div>
-          <div class="meta-item">
-            <i class="fas fa-map-marker-alt"></i>
-            <span>{{ pet.location }}</span>
-          </div>
-        </div>
-
-        <div class="section">
-          <h3><i class="fas fa-info-circle"></i> 宠物介绍</h3>
-          <p>{{ pet.description }}</p>
-        </div>
-
-        <div class="section">
-          <h3><i class="fas fa-heart"></i> 领养要求</h3>
-          <ul>
-            <li>• 有稳定的住所和收入</li>
-            <li>• 家人同意领养</li>
-            <li>• 定期回访和疫苗接种</li>
-            <li>• 签署领养协议</li>
-          </ul>
-        </div>
-
-        <div class="action-bar">
-          <button class="btn btn-secondary" @click="goToChat">
-            <i class="fas fa-message-circle"></i>
-            联系救助人
+          <button 
+            :class="['favorite-btn', { active: isFavorite }]"
+            @click="toggleFavorite"
+          >
+            {{ isFavorite ? '❤️' : '🤍' }}
           </button>
-          <button class="btn btn-primary" @click="showApplyModal = true" :disabled="pet.status !== 'available'">
-            <i class="fas fa-paw"></i>
-            {{ pet.status === 'available' ? '申请领养' : (pet.status === 'pending' ? '待审核' : '已领养') }}
-          </button>
+        </div>
+
+        <div class="pet-meta-grid">
+          <div class="meta-item">
+            <span class="meta-icon">📍</span>
+            <span class="meta-text">{{ pet.location }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-icon">🐾</span>
+            <span class="meta-text">{{ pet.breed }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-icon">⚧️</span>
+            <span class="meta-text">{{ pet.gender }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-icon">💉</span>
+            <span class="meta-text">{{ pet.vaccinated ? '已接种' : '未接种' }}</span>
+          </div>
         </div>
       </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="section-card">
+        <h3 class="section-title">
+          <span class="section-icon">📝</span>
+          关于{{ pet.name }}
+        </h3>
+        <p class="section-content">{{ pet.description }}</p>
+      </div>
+
+      <div class="section-card">
+        <h3 class="section-title">
+          <span class="section-icon">🏠</span>
+          领养要求
+        </h3>
+        <ul class="requirement-list">
+          <li v-for="(item, index) in pet.requirements" :key="index" class="requirement-item">
+            <span class="check-icon">✓</span>
+            {{ item }}
+          </li>
+        </ul>
+      </div>
+
+      <div class="section-card">
+        <h3 class="section-title">
+          <span class="section-icon">📞</span>
+          联系信息
+        </h3>
+        <div class="contact-info">
+          <div class="contact-item">
+            <span class="contact-label">救助机构</span>
+            <span class="contact-value">{{ pet.shelter }}</span>
+          </div>
+          <div class="contact-item">
+            <span class="contact-label">联系人</span>
+            <span class="contact-value">{{ pet.contact }}</span>
+          </div>
+          <div class="contact-item">
+            <span class="contact-label">联系电话</span>
+            <span class="contact-value">{{ pet.phone }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button class="action-btn secondary" @click="showShare">
+        <span class="action-icon">🔗</span>
+        <span class="action-text">分享</span>
+      </button>
+      <button class="action-btn primary" @click="showApplyModal = true">
+        <span class="action-icon">❤️</span>
+        <span class="action-text">申请领养</span>
+      </button>
     </div>
 
     <div v-if="showApplyModal" class="modal-overlay" @click.self="showApplyModal = false">
       <div class="modal-content">
-        <div class="modal-title">申请领养</div>
-        <div class="form-group">
-          <label class="form-label">联系电话</label>
-          <input v-model="applyForm.phone" type="tel" class="form-control" placeholder="请输入您的联系电话" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">居住地址</label>
-          <input v-model="applyForm.address" type="text" class="form-control" placeholder="请输入您的居住地址" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">领养理由</label>
-          <textarea v-model="applyForm.reason" class="form-control" rows="4" placeholder="请说明您的领养理由"></textarea>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" @click="showApplyModal = false">取消</button>
-          <button class="btn btn-primary" @click="submitApplication">提交申请</button>
-        </div>
+        <h3 class="modal-title">申请领养 {{ pet.name }}</h3>
+        <form @submit.prevent="submitApplication">
+          <div class="form-group">
+            <label class="form-label">您的姓名</label>
+            <input type="text" v-model="form.name" class="form-control" placeholder="请输入您的姓名" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">联系电话</label>
+            <input type="tel" v-model="form.phone" class="form-control" placeholder="请输入联系电话" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">居住地址</label>
+            <input type="text" v-model="form.address" class="form-control" placeholder="请输入居住地址" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">养宠经验</label>
+            <textarea v-model="form.experience" class="form-control" rows="3" placeholder="请简述您的养宠经验..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">领养原因</label>
+            <textarea v-model="form.reason" class="form-control" rows="3" placeholder="请说明您想领养的原因..."></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" @click="showApplyModal = false">取消</button>
+            <button type="submit" class="btn btn-primary">提交申请</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div v-if="showSuccessModal" class="modal-overlay" @click.self="showSuccessModal = false">
+      <div class="success-modal">
+        <div class="success-icon">🎉</div>
+        <h3 class="success-title">申请提交成功</h3>
+        <p class="success-text">我们会尽快与您联系，请保持电话畅通</p>
+        <button class="btn btn-primary" @click="closeSuccessModal">确定</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, reactive } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { api } from '../api'
-import { useStore } from '../store'
 
 const router = useRouter()
 const route = useRoute()
-const { state, methods } = useStore()
 
-const pet = ref({})
+const isFavorite = ref(false)
 const showApplyModal = ref(false)
-const applyForm = ref({ phone: '', address: '', reason: '' })
+const showSuccessModal = ref(false)
 
-const isFavorited = computed(() => {
-  return methods.isFavorite(pet.value.id)
+const form = reactive({
+  name: '',
+  phone: '',
+  address: '',
+  experience: '',
+  reason: ''
 })
 
-onMounted(async () => {
-  const id = route.params.id
-  try {
-    const res = await api.getPet(id)
-    if (res.data.success) {
-      pet.value = res.data.data
-    }
-  } catch (error) {
-    console.error('Failed to fetch pet:', error)
-  }
-
-  if (state.user) {
-    try {
-      const res = await api.getFavorites(state.user.id)
-      if (res.data.success) {
-        methods.setFavorites(res.data.data)
-      }
-    } catch (error) {
-      console.error('Failed to fetch favorites:', error)
-    }
-  }
+const pet = reactive({
+  id: route.params.id,
+  name: 'Chidi',
+  age: '2岁',
+  type: 'cat',
+  breed: '英国短毛猫',
+  gender: '雌性',
+  vaccinated: true,
+  location: '西安市.北大街',
+  shelter: '西安市小动物保护协会',
+  contact: '王女士',
+  phone: '138****8888',
+  image: 'https://neeko-copilot.bytedance.net/api/text_to_image?prompt=beautiful%20fluffy%20gray%20cat%20portrait%20elegant%20pose&image_size=square_hd',
+  description: 'Chidi是一只非常温顺的猫咪，性格活泼可爱。她喜欢被抚摸，喜欢玩逗猫棒。已经完成疫苗接种和绝育手术，非常健康。希望能找到一个有爱心的家庭给她一个温暖的家。',
+  requirements: [
+    '有稳定的居住环境',
+    '有养宠经验优先',
+    '同意定期回访',
+    '能提供良好的生活条件'
+  ]
 })
 
 const goBack = () => {
   router.back()
 }
 
-const toggleFavorite = async () => {
-  if (!state.user) {
-    router.push('/login')
+const toggleFavorite = () => {
+  isFavorite.value = !isFavorite.value
+}
+
+const showShare = () => {
+  alert('分享功能开发中')
+}
+
+const submitApplication = () => {
+  if (!form.name || !form.phone || !form.address) {
+    alert('请填写必填信息')
     return
   }
-
-  if (isFavorited.value) {
-    try {
-      await api.removeFavorite(state.user.id, pet.value.id)
-      methods.removeFavorite(pet.value.id)
-    } catch (error) {
-      console.error('Failed to remove favorite:', error)
-    }
-  } else {
-    try {
-      await api.addFavorite(state.user.id, pet.value.id)
-      methods.addFavorite(pet.value)
-    } catch (error) {
-      console.error('Failed to add favorite:', error)
-    }
-  }
+  showApplyModal.value = false
+  showSuccessModal.value = true
 }
 
-const goToChat = () => {
-  alert('聊天功能开发中')
-}
-
-const submitApplication = async () => {
-  if (!state.user) {
-    router.push('/login')
-    return
-  }
-
-  if (!applyForm.value.phone || !applyForm.value.address || !applyForm.value.reason) {
-    alert('请填写完整信息')
-    return
-  }
-
-  try {
-    const res = await api.createApplication(
-      state.user.id,
-      pet.value.id,
-      applyForm.value.reason,
-      applyForm.value.phone,
-      applyForm.value.address
-    )
-    if (res.data.success) {
-      alert('申请提交成功，等待审核')
-      showApplyModal.value = false
-      applyForm.value = { phone: '', address: '', reason: '' }
-    } else {
-      alert(res.data.message)
-    }
-  } catch (error) {
-    console.error('Failed to submit application:', error)
-    alert('提交失败，请重试')
-  }
-}
-
-const getStatusClass = (status) => {
-  return `status-${status}`
-}
-
-const getStatusText = (status) => {
-  const map = { available: '可领养', pending: '待审核', adopted: '已领养' }
-  return map[status] || status
+const closeSuccessModal = () => {
+  showSuccessModal.value = false
+  router.push('/')
 }
 </script>
 
 <style scoped>
-.pet-detail {
+.pet-detail-page {
   min-height: 100vh;
-  background: #fff;
+  background: var(--bg-color);
+  padding-bottom: 100px;
 }
 
-.back-btn {
+.detail-header {
   position: fixed;
-  top: 20px;
-  left: 15px;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 20px 15px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 100;
+}
+
+.back-btn, .share-btn {
   width: 40px;
   height: 40px;
   background: rgba(255, 255, 255, 0.9);
+  border: none;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
+  font-size: 18px;
+  cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.back-btn i {
-  color: #333;
-  font-size: 18px;
+.pet-main-content {
+  padding-top: 80px;
 }
 
-.pet-main {
-  display: flex;
-  flex-direction: column;
-}
-
-.pet-image-wrapper {
+.pet-image-container {
   position: relative;
+  width: 100%;
+  height: 350px;
 }
 
-.pet-image-wrapper img {
+.pet-main-image {
   width: 100%;
-  height: 300px;
+  height: 100%;
   object-fit: cover;
 }
 
-.pet-status-badge {
+.image-overlay {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  padding: 6px 16px;
+  bottom: 20px;
+  left: 20px;
+}
+
+.pet-type-badge {
+  padding: 8px 16px;
   border-radius: 20px;
   font-size: 14px;
+  font-weight: 500;
 }
 
-.pet-content {
-  padding: 20px;
-  margin-top: -30px;
-  background: #fff;
-  border-radius: 30px 30px 0 0;
-  position: relative;
+.pet-type-badge.dog {
+  background: rgba(61, 51, 47, 0.9);
+  color: #fff;
 }
 
-.pet-header {
+.pet-type-badge.cat {
+  background: rgba(201, 184, 150, 0.9);
+  color: #3d332f;
+}
+
+.pet-info-section {
+  background: var(--bg-card);
+  margin: -30px 15px 15px;
+  border-radius: 25px;
+  padding: 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.pet-title-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 20px;
 }
 
-.pet-title h1 {
+.pet-name-wrapper {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.pet-name {
   font-size: 28px;
   font-weight: 700;
   color: var(--text-color);
 }
 
-.pet-type {
-  font-size: 14px;
+.pet-age {
+  font-size: 16px;
   color: var(--text-muted);
-  margin-left: 8px;
 }
 
 .favorite-btn {
-  width: 44px;
-  height: 44px;
-  background: #f8f8f8;
+  width: 48px;
+  height: 48px;
+  background: rgba(92, 77, 70, 0.1);
+  border: none;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 24px;
   cursor: pointer;
-}
-
-.favorite-btn i {
-  font-size: 20px;
-  color: #ddd;
   transition: all 0.3s ease;
 }
 
-.favorite-btn i.active {
-  color: var(--primary-color);
+.favorite-btn.active {
+  background: rgba(255, 182, 193, 0.3);
 }
 
-.pet-meta-row {
-  display: flex;
-  justify-content: space-around;
-  padding: 16px;
-  background: #f8f8f8;
-  border-radius: 12px;
-  margin-bottom: 20px;
+.pet-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
 }
 
 .meta-item {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  color: #666;
+  gap: 8px;
 }
 
-.meta-item i {
+.meta-icon {
   font-size: 18px;
-  margin-bottom: 4px;
-  color: var(--primary-color);
 }
 
-.meta-item span {
-  font-size: 12px;
+.meta-text {
+  font-size: 14px;
+  color: var(--text-color);
 }
 
-.section {
-  margin-bottom: 20px;
+.detail-section {
+  padding: 0 15px;
 }
 
-.section h3 {
+.section-card {
+  background: var(--bg-card);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 16px;
   font-weight: 600;
   color: var(--text-color);
   margin-bottom: 12px;
 }
 
-.section p {
-  font-size: 14px;
-  color: #666;
-  line-height: 1.6;
+.section-icon {
+  font-size: 18px;
 }
 
-.section ul {
+.section-content {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.requirement-list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.section li {
+.requirement-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
   font-size: 14px;
-  color: #666;
-  line-height: 2;
+  color: var(--text-color);
+}
+
+.check-icon {
+  color: #52c41a;
+  font-weight: bold;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.contact-label {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.contact-value {
+  font-size: 14px;
+  color: var(--text-color);
+  font-weight: 500;
 }
 
 .action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg-card);
+  padding: 15px;
+  display: flex;
+  gap: 15px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.action-btn {
+  flex: 1;
+  padding: 16px;
+  border-radius: 20px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.action-btn.primary {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+.action-btn.secondary {
+  background: rgba(92, 77, 70, 0.1);
+  color: var(--primary-color);
+}
+
+.action-icon {
+  font-size: 18px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--bg-card);
+  width: 100%;
+  padding: 24px;
+  border-radius: 25px 25px 0 0;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--text-color);
+}
+
+.form-control {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 15px;
+  font-size: 14px;
+  background: var(--bg-color);
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+}
+
+.form-control::placeholder {
+  color: var(--text-muted);
+}
+
+.modal-footer {
   display: flex;
   gap: 12px;
-  padding: 20px 0 40px;
+  margin-top: 24px;
 }
 
-.action-bar .btn {
+.modal-footer .btn {
   flex: 1;
+  padding: 14px;
 }
 
-.action-bar .btn:disabled {
-  opacity: 0.5;
+.success-modal {
+  background: var(--bg-card);
+  width: 85%;
+  max-width: 350px;
+  padding: 40px 30px;
+  border-radius: 25px;
+  text-align: center;
+  margin: auto;
+}
+
+.success-icon {
+  font-size: 60px;
+  margin-bottom: 20px;
+}
+
+.success-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 12px;
+}
+
+.success-text {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
 }
 
 @media screen and (min-width: 768px) {
-  .pet-detail {
-    padding-top: 72px;
+  .pet-detail-page {
+    padding-top: 80px;
+    padding-bottom: 30px;
   }
 
-  .pet-main {
-    max-width: 1000px;
+  .detail-header {
+    padding: 25px 30px;
+  }
+
+  .back-btn, .share-btn {
+    width: 48px;
+    height: 48px;
+    font-size: 22px;
+  }
+
+  .pet-main-content {
+    display: flex;
+    max-width: 1200px;
     margin: 0 auto;
-    flex-direction: row;
     padding: 30px;
-    gap: 40px;
+    gap: 30px;
   }
 
-  .pet-image-wrapper {
-    flex-shrink: 0;
+  .pet-image-container {
     width: 45%;
-  }
-
-  .pet-image-wrapper img {
     height: 400px;
-    border-radius: 20px;
+    border-radius: 25px;
+    overflow: hidden;
   }
 
-  .pet-content {
+  .pet-info-section {
     flex: 1;
-    margin-top: 0;
-    border-radius: 20px;
+    margin: 0;
     padding: 30px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   }
 
-  .pet-title h1 {
-    font-size: 36px;
+  .pet-name {
+    font-size: 32px;
   }
 
-  .pet-type {
-    font-size: 18px;
+  .pet-meta-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
   }
 
-  .favorite-btn {
-    width: 56px;
-    height: 56px;
-  }
-
-  .favorite-btn i {
-    font-size: 24px;
-  }
-
-  .pet-meta-row {
-    padding: 24px;
-  }
-
-  .meta-item i {
-    font-size: 24px;
-  }
-
-  .meta-item span {
-    font-size: 14px;
-  }
-
-  .section h3 {
-    font-size: 20px;
-    margin-bottom: 16px;
-  }
-
-  .section p {
+  .meta-text {
     font-size: 16px;
   }
 
-  .section li {
+  .detail-section {
+    padding: 0 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-card {
+    padding: 24px;
+  }
+
+  .section-title {
+    font-size: 18px;
+  }
+
+  .section-content {
     font-size: 16px;
   }
 
   .action-bar {
-    padding: 30px 0 0;
+    display: none;
   }
 
-  .action-bar .btn {
-    padding: 16px 32px;
-    font-size: 18px;
+  .modal-overlay {
+    align-items: center;
+  }
+
+  .modal-content {
+    width: 90%;
+    max-width: 500px;
+    border-radius: 25px;
+    max-height: 90vh;
   }
 }
 
 @media screen and (min-width: 1024px) {
-  .pet-main {
-    max-width: 1200px;
-    gap: 60px;
+  .pet-main-content {
+    padding: 50px;
+    gap: 40px;
   }
 
-  .pet-image-wrapper img {
+  .pet-image-container {
     height: 500px;
   }
 
-  .pet-title h1 {
-    font-size: 42px;
+  .pet-info-section {
+    padding: 40px;
   }
 
-  .section h3 {
-    font-size: 22px;
+  .pet-name {
+    font-size: 36px;
   }
 
-  .section p {
+  .pet-age {
     font-size: 18px;
+  }
+
+  .detail-section {
+    padding: 0 50px;
   }
 }
 </style>

@@ -1,137 +1,167 @@
 <template>
   <div class="login-page">
-    <div class="logo-section">
-      <div class="logo">
-        <i class="fas fa-paw"></i>
+    <div class="login-header">
+      <div class="logo-wrapper">
+        <span class="logo-icon">🐾</span>
+        <span class="logo-text">宠爱到家</span>
       </div>
-      <h1>宠爱到家</h1>
-      <p>给TA一个温暖的家</p>
+      <p class="login-subtitle">让爱不再流浪</p>
     </div>
 
-    <div class="form-section">
-      <div class="form-group">
-        <label class="form-label">
-          <i class="fas fa-phone"></i>
-          手机号
-        </label>
-        <input v-model="form.phone" type="tel" class="form-control" placeholder="请输入手机号" maxlength="11" />
-      </div>
+    <div class="login-content">
+      <div class="login-card">
+        <h2 class="login-title">登录</h2>
+        
+        <form @submit.prevent="handleLogin">
+          <div class="form-group">
+            <label class="form-label">手机号</label>
+            <input 
+              type="tel" 
+              v-model="form.phone" 
+              class="form-control" 
+              placeholder="请输入手机号"
+              maxlength="11"
+            />
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">密码</label>
+            <input 
+              :type="showPassword ? 'text' : 'password'" 
+              v-model="form.password" 
+              class="form-control" 
+              placeholder="请输入密码"
+            />
+            <button type="button" class="toggle-password" @click="showPassword = !showPassword">
+              {{ showPassword ? '👁️' : '🙈' }}
+            </button>
+          </div>
 
-      <div class="form-group">
-        <label class="form-label">
-          <i class="fas fa-lock"></i>
-          密码
-        </label>
-        <input v-model="form.password" :type="showPassword ? 'text' : 'password'" class="form-control" placeholder="请输入密码" />
-        <span class="toggle-password" @click="showPassword = !showPassword">
-          <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-        </span>
-      </div>
+          <div class="form-row">
+            <label class="checkbox-label">
+              <input type="checkbox" v-model="rememberMe" />
+              <span class="checkmark"></span>
+              <span>记住我</span>
+            </label>
+            <a href="#" class="forgot-link">忘记密码?</a>
+          </div>
 
-      <button class="btn btn-primary btn-block" @click="handleLogin">登录</button>
+          <button type="submit" class="btn btn-primary btn-block login-btn">
+            登录
+          </button>
+        </form>
 
-      <div class="links">
-        <span class="link" @click="goToRegister">还没有账号？立即注册</span>
+        <div class="divider">
+          <span class="divider-text">或</span>
+        </div>
+
+        <button class="btn btn-secondary btn-block">
+          其他登录方式
+        </button>
+
+        <p class="register-link">
+          还没有账号? 
+          <a href="/register" class="link-primary">立即注册</a>
+        </p>
       </div>
     </div>
 
-    <div class="footer">
+    <div class="login-footer">
       <p>登录即表示同意</p>
-      <p><a href="#">《用户协议》</a> 和 <a href="#">《隐私政策》</a></p>
+      <div class="footer-links">
+        <a href="#">用户协议</a>
+        <span>|</span>
+        <a href="#">隐私政策</a>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { api } from '../api'
 import { useStore } from '../store'
 
 const router = useRouter()
-const { methods } = useStore()
-
-const form = ref({ phone: '', password: '' })
+const { state } = useStore()
 const showPassword = ref(false)
+const rememberMe = ref(false)
 
-const handleLogin = async () => {
-  if (!form.value.phone || !form.value.password) {
+const form = reactive({
+  phone: '',
+  password: ''
+})
+
+const handleLogin = () => {
+  if (!form.phone || !form.password) {
     alert('请填写完整信息')
     return
   }
-
-  if (!/^1[3-9]\d{9}$/.test(form.value.phone)) {
-    alert('请输入正确的手机号')
-    return
+  
+  state.user = {
+    id: 1,
+    name: '用户',
+    phone: form.phone
   }
-
-  try {
-    const res = await api.login(form.value.phone, form.value.password)
-    if (res.data.success) {
-      methods.setUser(res.data.data)
-      router.push('/')
-    } else {
-      alert(res.data.message)
-    }
-  } catch (error) {
-    console.error('Login failed:', error)
-    alert('登录失败，请重试')
-  }
-}
-
-const goToRegister = () => {
-  router.push('/register')
+  
+  router.push('/')
 }
 </script>
 
 <style scoped>
 .login-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-  padding: 40px 20px;
+  background: linear-gradient(180deg, var(--primary-color) 0%, var(--bg-color) 100%);
   display: flex;
   flex-direction: column;
 }
 
-.logo-section {
+.login-header {
+  padding: 60px 20px 40px;
   text-align: center;
-  margin-bottom: 40px;
 }
 
-.logo {
-  width: 80px;
-  height: 80px;
-  background: #fff;
-  border-radius: 50%;
+.logo-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
-.logo i {
+.logo-icon {
   font-size: 40px;
-  color: #ff9a9e;
 }
 
-.logo-section h1 {
+.logo-text {
   font-size: 32px;
   font-weight: 700;
   color: #fff;
-  margin-bottom: 8px;
 }
 
-.logo-section p {
-  font-size: 14px;
+.login-subtitle {
+  font-size: 16px;
   color: rgba(255, 255, 255, 0.8);
 }
 
-.form-section {
-  background: #fff;
-  border-radius: 20px;
+.login-content {
+  flex: 1;
+  padding: 0 20px;
+}
+
+.login-card {
+  background: var(--bg-card);
+  border-radius: 25px;
   padding: 30px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.login-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: center;
+  margin-bottom: 30px;
 }
 
 .form-group {
@@ -140,51 +170,165 @@ const goToRegister = () => {
 }
 
 .form-label {
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  color: #333;
+  display: block;
   margin-bottom: 8px;
+  font-size: 14px;
+  color: var(--text-color);
+  font-weight: 500;
 }
 
-.form-label i {
-  margin-right: 8px;
-  color: #ff9a9e;
+.form-control {
+  width: 100%;
+  padding: 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 15px;
+  font-size: 16px;
+  background: var(--bg-color);
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
 }
 
 .toggle-password {
   position: absolute;
-  right: 16px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: #999;
+  background: none;
+  border: none;
+  font-size: 18px;
   cursor: pointer;
 }
 
-.links {
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.checkbox-label input {
+  display: none;
+}
+
+.checkmark {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  position: relative;
+}
+
+.checkbox-label input:checked + .checkmark::after {
+  content: '✓';
+  position: absolute;
+  top: -2px;
+  left: 3px;
+  font-size: 14px;
+  color: var(--primary-color);
+}
+
+.forgot-link {
+  font-size: 14px;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.login-btn {
+  padding: 18px;
+  font-size: 18px;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border-color);
+}
+
+.divider-text {
+  padding: 0 16px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.register-link {
   text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
   margin-top: 20px;
 }
 
-.link {
-  color: #ff9a9e;
-  font-size: 14px;
-}
-
-.footer {
-  text-align: center;
-  margin-top: auto;
-  padding: 20px;
-}
-
-.footer p {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 4px;
-}
-
-.footer a {
-  color: rgba(255, 255, 255, 0.9);
+.link-primary {
+  color: var(--primary-color);
   text-decoration: none;
+  font-weight: 500;
+}
+
+.login-footer {
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.login-footer p {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-links a {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.footer-links span {
+  color: var(--border-color);
+}
+
+@media screen and (min-width: 768px) {
+  .login-page {
+    justify-content: center;
+    padding: 50px;
+  }
+
+  .login-header {
+    padding: 0 20px 30px;
+  }
+
+  .login-content {
+    max-width: 450px;
+    margin: 0 auto;
+  }
+
+  .login-card {
+    padding: 40px;
+  }
 }
 </style>
