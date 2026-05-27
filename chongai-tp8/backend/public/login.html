@@ -19,8 +19,8 @@
 
         <form id="loginForm" class="auth-form">
             <div class="form-group">
-                <label class="form-label">手机号</label>
-                <input type="tel" id="phone" class="form-control" placeholder="请输入手机号" maxlength="11" />
+                <label class="form-label">用户名 / 手机号</label>
+                <input type="text" id="username" class="form-control" placeholder="请输入用户名或手机号" maxlength="11" />
             </div>
             <div class="form-group">
                 <label class="form-label">密码</label>
@@ -40,34 +40,29 @@
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            var phone = document.getElementById('phone').value;
+            var username = document.getElementById('username').value;
             var password = document.getElementById('password').value;
             
-            if (!phone || !password) {
-                showModal('请填写完整信息');
-                return;
-            }
-            
-            if (phone.length !== 11) {
-                showModal('请输入正确的手机号');
+            if (!username || !password) {
+                alert('请填写用户名和密码');
                 return;
             }
             
             ajax({
                 url: '/api/login',
                 method: 'POST',
-                data: { phone: phone, password: password },
+                data: { username: username, password: password },
                 success: function(response) {
                     if (response.code === 200) {
                         setToken(response.data.token);
-                        showModal('登录成功');
+                        alert('登录成功');
                         setTimeout(function() {
                             window.location.href = 'index.html';
                         }, 1500);
                     }
                 },
                 error: function(response) {
-                    showModal(response.msg || '登录失败');
+                    alert(response.msg || '登录失败');
                 }
             });
         });
