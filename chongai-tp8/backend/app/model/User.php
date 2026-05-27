@@ -5,7 +5,7 @@ use think\Model;
 
 class User extends Model
 {
-    protected $name = 'user';
+    protected $name = 'chongai_user';
     protected $pk = 'id';
     
     protected $hidden = ['password', 'created_at', 'updated_at'];

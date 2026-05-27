@@ -7,19 +7,18 @@ use Firebase\JWT\JWT;
 
 class UserController
 {
-    private $secret = 'chongai_jwt_secret_key_2024';
+    private $secret = 'chongai_jwt_secret_key_2024_longer_key_abc123';
     
     public function login()
     {
         $data = Request::post();
-        $loginKey = $data['username'] ?? ''; // 可以是用户名或手机号
+        $loginKey = $data['username'] ?? '';
         $password = $data['password'] ?? '';
         
         if (!$loginKey || !$password) {
             return json(['code' => 400, 'msg' => '请输入用户名/手机号和密码']);
         }
         
-        // 支持用户名或手机号登录
         $user = User::where('username', $loginKey)->find();
         if (!$user) {
             $user = User::where('phone', $loginKey)->find();
@@ -61,7 +60,6 @@ class UserController
         $password = $data['password'] ?? '';
         $confirmPassword = $data['confirmPassword'] ?? '';
         
-        // 用户名是必填的
         if (!$username) {
             return json(['code' => 400, 'msg' => '请填写用户名']);
         }
@@ -82,12 +80,10 @@ class UserController
             return json(['code' => 400, 'msg' => '用户名长度不能超过20位']);
         }
         
-        // 检查用户名唯一性
         if (User::where('username', $username)->find()) {
             return json(['code' => 400, 'msg' => '该用户名已被注册']);
         }
         
-        // 如果填写了手机号，检查唯一性
         if ($phone && User::where('phone', $phone)->find()) {
             return json(['code' => 400, 'msg' => '该手机号已注册']);
         }

@@ -30,7 +30,7 @@ CREATE TABLE `chongai_pet` (
     `type` enum('dog','cat') NOT NULL COMMENT '类型：狗/猫',
     `age` varchar(20) DEFAULT '' COMMENT '年龄',
     `breed` varchar(50) DEFAULT '' COMMENT '品种',
-    `gender` enum('male','female') DEFAULT '' COMMENT '性别',
+    `gender` enum('male','female') DEFAULT NULL COMMENT '性别',
     `location` varchar(100) DEFAULT '' COMMENT '位置',
     `image` varchar(255) DEFAULT '' COMMENT '图片',
     `description` text COMMENT '描述',
