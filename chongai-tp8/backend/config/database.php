@@ -14,10 +14,10 @@ return [
     'connections'     => [
         'mysql' => [
             'type'            => 'mysql',
-            'hostname'        => '127.0.0.1',
+            'hostname'        => '116.204.132.158',
             'database'        => 'chongai',
-            'username'        => 'root',
-            'password'        => '',
+            'username'        => 'chongai',
+            'password'        => 'sRCMhycJ7KcsGKTd',
             'hostport'        => '3306',
             'params'          => [],
             'charset'         => 'utf8mb4',
