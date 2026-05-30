@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>宠爱到家 - 宠物详情</title>
+    <link rel="stylesheet" href="https://cdn.amazeui.org/amazeui/2.7.2/css/amazeui.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="am-header header-fixed">
+        <div class="am-header-left">
+            <button class="back-btn" onclick="goBack()">←</button>
+        </div>
+        <div class="am-header-center">
+            <span class="header-title">宠物详情</span>
+        </div>
+        <div class="am-header-right">
+            <button class="share-btn">⋮</button>
+        </div>
+    </header>
+
+    <div class="pet-detail-content">
+        <div class="pet-image-container">
+            <img id="petImage" alt="宠物照片" class="pet-main-image">
+            <div class="image-overlay">
+                <span id="petTypeBadge" class="pet-type-badge"></span>
+            </div>
+        </div>
+
+        <div class="pet-info-section">
+            <div class="pet-title-row">
+                <div class="pet-name-wrapper">
+                    <h1 id="petName" class="pet-name"></h1>
+                    <span id="petAge" class="pet-age"></span>
+                </div>
+                <button class="favorite-btn" id="favoriteBtn" onclick="toggleFavorite()">🤍</button>
+            </div>
+
+            <div class="pet-meta-grid">
+                <div class="meta-item">
+                    <span class="meta-icon">📍</span>
+                    <span id="petLocation" class="meta-text"></span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon">🐾</span>
+                    <span id="petBreed" class="meta-text"></span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon">⚧️</span>
+                    <span id="petGender" class="meta-text"></span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon">💉</span>
+                    <span id="petVaccinated" class="meta-text"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-section">
+            <div class="section-card">
+                <h3 class="section-title">
+                    <span class="section-icon">📝</span>
+                    关于
+                </h3>
+                <p id="petDescription" class="section-content"></p>
+            </div>
+
+            <div class="section-card">
+                <h3 class="section-title">
+                    <span class="section-icon">🏠</span>
+                    领养要求
+                </h3>
+                <ul id="petRequirements" class="requirement-list"></ul>
+            </div>
+
+            <div class="section-card">
+                <h3 class="section-title">
+                    <span class="section-icon">📞</span>
+                    联系信息
+                </h3>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <span class="contact-label">救助机构</span>
+                        <span id="petShelter" class="contact-value"></span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-label">联系人</span>
+                        <span id="petContact" class="contact-value"></span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-label">联系电话</span>
+                        <span id="petPhone" class="contact-value"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="action-bar">
+        <button class="action-btn secondary" onclick="sharePet()">
+            <span class="action-icon">🔗</span>
+            <span class="action-text">分享</span>
+        </button>
+        <button class="action-btn primary" onclick="showApplyModal()">
+            <span class="action-icon">❤️</span>
+            <span class="action-text">申请领养</span>
+        </button>
+    </div>
+
+    <div id="applyModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3 class="modal-title">申请领养</h3>
+            <form id="applyForm">
+                <div class="form-group">
+                    <label class="form-label">您的姓名</label>
+                    <input type="text" id="applyName" class="form-control" placeholder="请输入您的姓名" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">联系电话</label>
+                    <input type="tel" id="applyPhone" class="form-control" placeholder="请输入联系电话" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">居住地址</label>
+                    <input type="text" id="applyAddress" class="form-control" placeholder="请输入居住地址" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">养宠经验</label>
+                    <textarea id="applyExperience" class="form-control" rows="3" placeholder="请简述您的养宠经验..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">领养原因</label>
+                    <textarea id="applyReason" class="form-control" rows="3" placeholder="请说明您想领养的原因..."></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">提交申请</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <nav class="am-tabs tab-bar">
+        <ul class="am-avg-sm-5">
+            <li>
+                <a href="index.html">
+                    <span class="tab-icon">🏠</span>
+                    <span class="tab-label">首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="pets.html">
+                    <span class="tab-icon">🔍</span>
+                    <span class="tab-label">发现</span>
+                </a>
+            </li>
+            <li class="tab-center-item">
+                <a href="pets.html" class="tab-center-btn">
+                    <span class="center-icon">🐾</span>
+                </a>
+            </li>
+            <li>
+                <a href="favorites.html">
+                    <span class="tab-icon">❤️</span>
+                    <span class="tab-label">收藏</span>
+                </a>
+            </li>
+            <li>
+                <a href="profile.html">
+                    <span class="tab-icon">👤</span>
+                    <span class="tab-label">我的</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <script src="https://cdn.amazeui.org/amazeui/2.7.2/js/amazeui.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/pet-detail.js"></script>
+</body>
+</html>
