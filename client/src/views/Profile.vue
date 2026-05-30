@@ -3,10 +3,12 @@
     <div class="profile-header">
       <div class="user-info">
         <div class="avatar-wrapper">
-          <div class="avatar">
-            <span class="avatar-icon">👤</span>
-          </div>
-          <div class="edit-avatar">📷</div>
+          <el-avatar :size="80" class="avatar">
+            <el-icon :size="40"><User /></el-icon>
+          </el-avatar>
+          <el-button circle size="small" class="edit-avatar" type="primary">
+            <el-icon><Camera /></el-icon>
+          </el-button>
         </div>
         <div class="user-detail">
           <h2 class="user-name">{{ user.name }}</h2>
@@ -15,67 +17,78 @@
       </div>
     </div>
 
-    <div class="stats-row">
-      <div class="stat-item">
-        <span class="stat-number">{{ stats.favorites }}</span>
-        <span class="stat-label">收藏</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        <span class="stat-number">{{ stats.applications }}</span>
-        <span class="stat-label">申请</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        <span class="stat-number">{{ stats.adopted }}</span>
-        <span class="stat-label">已领养</span>
-      </div>
-    </div>
+    <el-card class="stats-card" shadow="hover">
+      <el-row :gutter="20">
+        <el-col :span="8" class="stat-item">
+          <div class="stat-number">{{ stats.favorites }}</div>
+          <div class="stat-label">收藏</div>
+        </el-col>
+        <el-col :span="8" class="stat-item">
+          <div class="stat-number">{{ stats.applications }}</div>
+          <div class="stat-label">申请</div>
+        </el-col>
+        <el-col :span="8" class="stat-item">
+          <div class="stat-number">{{ stats.adopted }}</div>
+          <div class="stat-label">已领养</div>
+        </el-col>
+      </el-row>
+    </el-card>
 
     <div class="menu-section">
-      <div class="menu-card">
-        <button class="menu-item" @click="goToFavorites">
-          <span class="menu-icon">❤️</span>
-          <span class="menu-text">我的收藏</span>
-          <span class="menu-arrow">→</span>
-        </button>
-        <button class="menu-item" @click="goToApplications">
-          <span class="menu-icon">📝</span>
-          <span class="menu-text">领养记录</span>
-          <span class="menu-arrow">→</span>
-        </button>
-        <button class="menu-item">
-          <span class="menu-icon">🌙</span>
-          <span class="menu-text">夜间模式</span>
-          <span class="menu-arrow">→</span>
-        </button>
-      </div>
+      <el-card class="menu-card" shadow="hover">
+        <el-menu
+          :default-active="activeMenu"
+          class="el-menu-vertical"
+          @select="handleMenuSelect"
+        >
+          <el-menu-item index="favorites">
+            <el-icon><Heart /></el-icon>
+            <span>我的收藏</span>
+          </el-menu-item>
+          <el-menu-item index="applications">
+            <el-icon><Document /></el-icon>
+            <span>领养记录</span>
+          </el-menu-item>
+          <el-menu-item index="settings">
+            <el-icon><Setting /></el-icon>
+            <span>设置</span>
+          </el-menu-item>
+        </el-menu>
+      </el-card>
 
-      <div class="menu-card">
-        <button class="menu-item">
-          <span class="menu-icon">📞</span>
-          <span class="menu-text">联系客服</span>
-          <span class="menu-arrow">→</span>
-        </button>
-        <button class="menu-item">
-          <span class="menu-icon">📜</span>
-          <span class="menu-text">用户协议</span>
-          <span class="menu-arrow">→</span>
-        </button>
-        <button class="menu-item">
-          <span class="menu-icon">🔒</span>
-          <span class="menu-text">隐私政策</span>
-          <span class="menu-arrow">→</span>
-        </button>
-      </div>
+      <el-card class="menu-card" shadow="hover">
+        <el-menu
+          :default-active="activeMenu"
+          class="el-menu-vertical"
+          @select="handleMenuSelect"
+        >
+          <el-menu-item index="contact">
+            <el-icon><Phone /></el-icon>
+            <span>联系客服</span>
+          </el-menu-item>
+          <el-menu-item index="terms">
+            <el-icon><DocumentCopy /></el-icon>
+            <span>用户协议</span>
+          </el-menu-item>
+          <el-menu-item index="privacy">
+            <el-icon><Lock /></el-icon>
+            <span>隐私政策</span>
+          </el-menu-item>
+        </el-menu>
+      </el-card>
 
-      <div class="menu-card">
-        <button class="menu-item" @click="handleLogout">
-          <span class="menu-icon">🚪</span>
-          <span class="menu-text">退出登录</span>
-          <span class="menu-arrow">→</span>
-        </button>
-      </div>
+      <el-card class="menu-card" shadow="hover">
+        <el-menu
+          :default-active="activeMenu"
+          class="el-menu-vertical"
+          @select="handleLogout"
+        >
+          <el-menu-item index="logout" class="logout-item">
+            <el-icon><SwitchButton /></el-icon>
+            <span>退出登录</span>
+          </el-menu-item>
+        </el-menu>
+      </el-card>
     </div>
 
     <div class="footer">
@@ -86,12 +99,12 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { useStore } from '../store'
+import { User, Camera, Heart, Document, Phone, DocumentCopy, Lock, SwitchButton, Setting } from '@element-plus/icons-vue'
 
 const router = useRouter()
-const { state } = useStore()
+const activeMenu = ref('')
 
 const user = reactive({
   name: '用户',
@@ -104,16 +117,17 @@ const stats = reactive({
   adopted: 1
 })
 
-const goToFavorites = () => {
-  router.push('/favorites')
-}
-
-const goToApplications = () => {
-  router.push('/applications')
+const handleMenuSelect = (index) => {
+  if (index === 'favorites') {
+    router.push('/favorites')
+  } else if (index === 'applications') {
+    router.push('/applications')
+  } else {
+    console.log('Menu selected:', index)
+  }
 }
 
 const handleLogout = () => {
-  state.user = null
   router.push('/login')
 }
 </script>
@@ -121,12 +135,12 @@ const handleLogout = () => {
 <style scoped>
 .profile-page {
   min-height: 100vh;
-  background: var(--bg-color);
+  background: #f5efe7;
   padding-bottom: 80px;
 }
 
 .profile-header {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  background: linear-gradient(135deg, #b8a082 0%, #c9b896 100%);
   padding: 40px 15px 30px;
   border-radius: 0 0 30px 30px;
 }
@@ -142,31 +156,15 @@ const handleLogout = () => {
 }
 
 .avatar {
-  width: 80px;
-  height: 80px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.avatar-icon {
-  font-size: 40px;
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .edit-avatar {
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 28px;
-  height: 28px;
   background: #fff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
+  color: #b8a082;
 }
 
 .user-detail {
@@ -176,45 +174,36 @@ const handleLogout = () => {
 .user-name {
   font-size: 24px;
   font-weight: 600;
-  margin-bottom: 4px;
+  margin: 0 0 4px 0;
 }
 
 .user-phone {
   font-size: 14px;
   opacity: 0.9;
+  margin: 0;
 }
 
-.stats-row {
-  display: flex;
-  background: var(--bg-card);
+.stats-card {
   margin: -20px 15px 20px;
   border-radius: 20px;
-  padding: 24px 16px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .stat-item {
-  flex: 1;
   text-align: center;
+  padding: 10px 0;
 }
 
 .stat-number {
   font-size: 24px;
   font-weight: 700;
-  color: var(--primary-color);
+  color: #b8a082;
   display: block;
   margin-bottom: 4px;
 }
 
 .stat-label {
   font-size: 13px;
-  color: var(--text-muted);
-}
-
-.stat-divider {
-  width: 1px;
-  background: var(--border-color);
-  margin: 0 10px;
+  color: #888;
 }
 
 .menu-section {
@@ -222,48 +211,27 @@ const handleLogout = () => {
 }
 
 .menu-card {
-  background: var(--bg-card);
-  border-radius: 20px;
   margin-bottom: 15px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
 }
 
-.menu-item {
-  width: 100%;
-  padding: 20px 16px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: transparent;
+.el-menu-vertical {
   border: none;
-  border-bottom: 1px solid var(--border-color);
-  cursor: pointer;
-  transition: background 0.3s ease;
+  background: transparent;
 }
 
-.menu-item:last-child {
-  border-bottom: none;
+.el-menu-vertical :deep(.el-menu-item) {
+  border-radius: 10px;
+  margin-bottom: 5px;
 }
 
-.menu-item:hover {
-  background: rgba(92, 77, 70, 0.05);
+.el-menu-vertical :deep(.el-menu-item:hover) {
+  background: rgba(184, 160, 130, 0.1);
 }
 
-.menu-icon {
-  font-size: 22px;
-}
-
-.menu-text {
-  flex: 1;
-  text-align: left;
-  font-size: 16px;
-  color: var(--text-color);
-}
-
-.menu-arrow {
-  font-size: 16px;
-  color: var(--text-muted);
+.logout-item :deep(.el-icon),
+.logout-item :deep(span) {
+  color: #f56c6c;
 }
 
 .footer {
@@ -273,14 +241,15 @@ const handleLogout = () => {
 
 .footer-text {
   font-size: 13px;
-  color: var(--text-muted);
-  margin-bottom: 4px;
+  color: #888;
+  margin: 0 0 4px 0;
 }
 
 .footer-copyright {
   font-size: 12px;
-  color: var(--text-muted);
+  color: #888;
   opacity: 0.7;
+  margin: 0;
 }
 
 @media screen and (min-width: 768px) {
@@ -295,26 +264,11 @@ const handleLogout = () => {
     padding: 50px 30px 40px;
   }
 
-  .avatar {
-    width: 100px;
-    height: 100px;
-  }
-
-  .avatar-icon {
-    font-size: 50px;
-  }
-
-  .edit-avatar {
-    width: 32px;
-    height: 32px;
-    font-size: 16px;
-  }
-
   .user-name {
     font-size: 28px;
   }
 
-  .stats-row {
+  .stats-card {
     margin: -25px 30px 25px;
     padding: 30px;
   }
@@ -327,20 +281,8 @@ const handleLogout = () => {
     font-size: 14px;
   }
 
-  .stat-divider {
-    margin: 0 20px;
-  }
-
   .menu-section {
     padding: 0 30px;
-  }
-
-  .menu-item {
-    padding: 24px 20px;
-  }
-
-  .menu-text {
-    font-size: 17px;
   }
 }
 

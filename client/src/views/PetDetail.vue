@@ -1,156 +1,170 @@
 <template>
   <div class="pet-detail-page">
     <div class="detail-header">
-      <button class="back-btn" @click="goBack">←</button>
-      <button class="share-btn">⋮</button>
+      <el-button circle @click="goBack">
+        <el-icon><ArrowLeft /></el-icon>
+      </el-button>
+      <el-button circle @click="showShare">
+        <el-icon><Share /></el-icon>
+      </el-button>
     </div>
 
     <div class="pet-main-content">
       <div class="pet-image-container">
-        <img :src="pet.image" :alt="pet.name" class="pet-main-image" />
+        <el-image :src="pet.image" fit="cover" class="pet-main-image" />
         <div class="image-overlay">
-          <span class="pet-type-badge" :class="pet.type === 'dog' ? 'dog' : 'cat'">
+          <el-tag :type="pet.type === 'dog' ? 'warning' : 'success'" size="large">
             {{ pet.type === 'dog' ? '🐕 狗狗' : '🐱 猫咪' }}
-          </span>
+          </el-tag>
         </div>
       </div>
 
-      <div class="pet-info-section">
+      <el-card class="pet-info-section" shadow="hover">
         <div class="pet-title-row">
           <div class="pet-name-wrapper">
             <h1 class="pet-name">{{ pet.name }}</h1>
             <span class="pet-age">{{ pet.age }}</span>
           </div>
-          <button 
-            :class="['favorite-btn', { active: isFavorite }]"
+          <el-button
+            :type="isFavorite ? 'danger' : 'default'"
+            circle
+            size="large"
             @click="toggleFavorite"
           >
-            {{ isFavorite ? '❤️' : '🤍' }}
-          </button>
+            <el-icon :size="22">
+              <component :is="isFavorite ? 'HeartFilled' : 'Heart'" />
+            </el-icon>
+          </el-button>
         </div>
 
-        <div class="pet-meta-grid">
-          <div class="meta-item">
-            <span class="meta-icon">📍</span>
-            <span class="meta-text">{{ pet.location }}</span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-icon">🐾</span>
-            <span class="meta-text">{{ pet.breed }}</span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-icon">⚧️</span>
-            <span class="meta-text">{{ pet.gender }}</span>
-          </div>
-          <div class="meta-item">
-            <span class="meta-icon">💉</span>
-            <span class="meta-text">{{ pet.vaccinated ? '已接种' : '未接种' }}</span>
-          </div>
-        </div>
-      </div>
+        <el-row :gutter="16" class="pet-meta-grid">
+          <el-col :span="12" v-for="(item, index) in petMeta" :key="index">
+            <div class="meta-item">
+              <el-icon class="meta-icon"><component :is="item.icon" /></el-icon>
+              <span class="meta-text">{{ item.text }}</span>
+            </div>
+          </el-col>
+        </el-row>
+      </el-card>
     </div>
 
     <div class="detail-section">
-      <div class="section-card">
-        <h3 class="section-title">
-          <span class="section-icon">📝</span>
-          关于{{ pet.name }}
-        </h3>
+      <el-card class="section-card" shadow="hover">
+        <template #header>
+          <div class="card-header">
+            <el-icon><Document /></el-icon>
+            <span>关于{{ pet.name }}</span>
+          </div>
+        </template>
         <p class="section-content">{{ pet.description }}</p>
-      </div>
+      </el-card>
 
-      <div class="section-card">
-        <h3 class="section-title">
-          <span class="section-icon">🏠</span>
-          领养要求
-        </h3>
+      <el-card class="section-card" shadow="hover">
+        <template #header>
+          <div class="card-header">
+            <el-icon><House /></el-icon>
+            <span>领养要求</span>
+          </div>
+        </template>
         <ul class="requirement-list">
           <li v-for="(item, index) in pet.requirements" :key="index" class="requirement-item">
-            <span class="check-icon">✓</span>
-            {{ item }}
+            <el-icon color="#52c41a"><CircleCheck /></el-icon>
+            <span>{{ item }}</span>
           </li>
         </ul>
-      </div>
+      </el-card>
 
-      <div class="section-card">
-        <h3 class="section-title">
-          <span class="section-icon">📞</span>
-          联系信息
-        </h3>
-        <div class="contact-info">
-          <div class="contact-item">
-            <span class="contact-label">救助机构</span>
-            <span class="contact-value">{{ pet.shelter }}</span>
+      <el-card class="section-card" shadow="hover">
+        <template #header>
+          <div class="card-header">
+            <el-icon><Phone /></el-icon>
+            <span>联系信息</span>
           </div>
-          <div class="contact-item">
-            <span class="contact-label">联系人</span>
-            <span class="contact-value">{{ pet.contact }}</span>
-          </div>
-          <div class="contact-item">
-            <span class="contact-label">联系电话</span>
-            <span class="contact-value">{{ pet.phone }}</span>
-          </div>
-        </div>
-      </div>
+        </template>
+        <el-descriptions :column="1" border>
+          <el-descriptions-item label="救助机构">{{ pet.shelter }}</el-descriptions-item>
+          <el-descriptions-item label="联系人">{{ pet.contact }}</el-descriptions-item>
+          <el-descriptions-item label="联系电话">{{ pet.phone }}</el-descriptions-item>
+        </el-descriptions>
+      </el-card>
     </div>
 
     <div class="action-bar">
-      <button class="action-btn secondary" @click="showShare">
-        <span class="action-icon">🔗</span>
-        <span class="action-text">分享</span>
-      </button>
-      <button class="action-btn primary" @click="showApplyModal = true">
-        <span class="action-icon">❤️</span>
-        <span class="action-text">申请领养</span>
-      </button>
+      <el-button class="action-btn" @click="showShare">
+        <el-icon><Share /></el-icon>
+        <span>分享</span>
+      </el-button>
+      <el-button type="primary" class="action-btn primary" @click="showApplyModal = true">
+        <el-icon><HeartFilled /></el-icon>
+        <span>申请领养</span>
+      </el-button>
     </div>
 
-    <div v-if="showApplyModal" class="modal-overlay" @click.self="showApplyModal = false">
-      <div class="modal-content">
-        <h3 class="modal-title">申请领养 {{ pet.name }}</h3>
-        <form @submit.prevent="submitApplication">
-          <div class="form-group">
-            <label class="form-label">您的姓名</label>
-            <input type="text" v-model="form.name" class="form-control" placeholder="请输入您的姓名" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">联系电话</label>
-            <input type="tel" v-model="form.phone" class="form-control" placeholder="请输入联系电话" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">居住地址</label>
-            <input type="text" v-model="form.address" class="form-control" placeholder="请输入居住地址" />
-          </div>
-          <div class="form-group">
-            <label class="form-label">养宠经验</label>
-            <textarea v-model="form.experience" class="form-control" rows="3" placeholder="请简述您的养宠经验..."></textarea>
-          </div>
-          <div class="form-group">
-            <label class="form-label">领养原因</label>
-            <textarea v-model="form.reason" class="form-control" rows="3" placeholder="请说明您想领养的原因..."></textarea>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" @click="showApplyModal = false">取消</button>
-            <button type="submit" class="btn btn-primary">提交申请</button>
-          </div>
-        </form>
-      </div>
-    </div>
+    <el-dialog
+      v-model="showApplyModal"
+      title="申请领养"
+      width="90%"
+      :close-on-click-modal="false"
+    >
+      <el-form :model="form" label-width="80px">
+        <el-form-item label="您的姓名">
+          <el-input v-model="form.name" placeholder="请输入您的姓名" />
+        </el-form-item>
+        <el-form-item label="联系电话">
+          <el-input v-model="form.phone" placeholder="请输入联系电话" />
+        </el-form-item>
+        <el-form-item label="居住地址">
+          <el-input v-model="form.address" placeholder="请输入居住地址" />
+        </el-form-item>
+        <el-form-item label="养宠经验">
+          <el-input v-model="form.experience" type="textarea" :rows="3" placeholder="请简述您的养宠经验..." />
+        </el-form-item>
+        <el-form-item label="领养原因">
+          <el-input v-model="form.reason" type="textarea" :rows="3" placeholder="请说明您想领养的原因..." />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="showApplyModal = false">取消</el-button>
+        <el-button type="primary" @click="submitApplication">提交申请</el-button>
+      </template>
+    </el-dialog>
 
-    <div v-if="showSuccessModal" class="modal-overlay" @click.self="showSuccessModal = false">
-      <div class="success-modal">
-        <div class="success-icon">🎉</div>
-        <h3 class="success-title">申请提交成功</h3>
+    <el-dialog
+      v-model="showSuccessModal"
+      title="申请提交成功"
+      width="80%"
+      :close-on-click-modal="false"
+      center
+    >
+      <div class="success-content">
+        <el-icon class="success-icon" color="#52c41a"><CircleCheck /></el-icon>
         <p class="success-text">我们会尽快与您联系，请保持电话畅通</p>
-        <button class="btn btn-primary" @click="closeSuccessModal">确定</button>
       </div>
-    </div>
+      <template #footer>
+        <el-button type="primary" @click="closeSuccessModal" class="success-btn">确定</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
+import { 
+  ArrowLeft, 
+  Share, 
+  Heart, 
+  HeartFilled, 
+  Document, 
+  House, 
+  Phone, 
+  CircleCheck, 
+  Location, 
+  Paw, 
+  Male, 
+  Female, 
+  FirstAidKit 
+} from '@element-plus/icons-vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -189,6 +203,13 @@ const pet = reactive({
   ]
 })
 
+const petMeta = computed(() => [
+  { icon: Location, text: pet.location },
+  { icon: Paw, text: pet.breed },
+  { icon: pet.gender === '雌性' ? Female : Male, text: pet.gender },
+  { icon: FirstAidKit, text: pet.vaccinated ? '已接种' : '未接种' }
+])
+
 const goBack = () => {
   router.back()
 }
@@ -219,7 +240,7 @@ const closeSuccessModal = () => {
 <style scoped>
 .pet-detail-page {
   min-height: 100vh;
-  background: var(--bg-color);
+  background: #f5efe7;
   padding-bottom: 100px;
 }
 
@@ -232,17 +253,6 @@ const closeSuccessModal = () => {
   display: flex;
   justify-content: space-between;
   z-index: 100;
-}
-
-.back-btn, .share-btn {
-  width: 40px;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
-  border-radius: 50%;
-  font-size: 18px;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .pet-main-content {
@@ -258,7 +268,6 @@ const closeSuccessModal = () => {
 .pet-main-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
 }
 
 .image-overlay {
@@ -267,29 +276,9 @@ const closeSuccessModal = () => {
   left: 20px;
 }
 
-.pet-type-badge {
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.pet-type-badge.dog {
-  background: rgba(61, 51, 47, 0.9);
-  color: #fff;
-}
-
-.pet-type-badge.cat {
-  background: rgba(201, 184, 150, 0.9);
-  color: #3d332f;
-}
-
 .pet-info-section {
-  background: var(--bg-card);
   margin: -30px 15px 15px;
-  border-radius: 25px;
-  padding: 24px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
 }
 
 .pet-title-row {
@@ -308,48 +297,34 @@ const closeSuccessModal = () => {
 .pet-name {
   font-size: 28px;
   font-weight: 700;
-  color: var(--text-color);
+  color: #444;
+  margin: 0;
 }
 
 .pet-age {
   font-size: 16px;
-  color: var(--text-muted);
-}
-
-.favorite-btn {
-  width: 48px;
-  height: 48px;
-  background: rgba(92, 77, 70, 0.1);
-  border: none;
-  border-radius: 50%;
-  font-size: 24px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.favorite-btn.active {
-  background: rgba(255, 182, 193, 0.3);
+  color: #888;
 }
 
 .pet-meta-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
+  margin-top: 16px;
 }
 
 .meta-item {
   display: flex;
   align-items: center;
   gap: 8px;
+  padding: 8px 0;
 }
 
 .meta-icon {
+  color: #b8a082;
   font-size: 18px;
 }
 
 .meta-text {
   font-size: 14px;
-  color: var(--text-color);
+  color: #444;
 }
 
 .detail-section {
@@ -357,31 +332,22 @@ const closeSuccessModal = () => {
 }
 
 .section-card {
-  background: var(--bg-card);
-  border-radius: 20px;
-  padding: 20px;
   margin-bottom: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 20px;
 }
 
-.section-title {
+.card-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 16px;
   font-weight: 600;
-  color: var(--text-color);
-  margin-bottom: 12px;
-}
-
-.section-icon {
-  font-size: 18px;
 }
 
 .section-content {
   font-size: 14px;
-  color: var(--text-muted);
+  color: #888;
   line-height: 1.7;
+  margin: 0;
 }
 
 .requirement-list {
@@ -396,35 +362,7 @@ const closeSuccessModal = () => {
   gap: 10px;
   padding: 8px 0;
   font-size: 14px;
-  color: var(--text-color);
-}
-
-.check-icon {
-  color: #52c41a;
-  font-weight: bold;
-}
-
-.contact-info {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.contact-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.contact-label {
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
-.contact-value {
-  font-size: 14px;
-  color: var(--text-color);
-  font-weight: 500;
+  color: #444;
 }
 
 .action-bar {
@@ -432,7 +370,7 @@ const closeSuccessModal = () => {
   bottom: 0;
   left: 0;
   right: 0;
-  background: var(--bg-card);
+  background: #fff;
   padding: 15px;
   display: flex;
   gap: 15px;
@@ -442,109 +380,23 @@ const closeSuccessModal = () => {
 .action-btn {
   flex: 1;
   padding: 16px;
-  border-radius: 20px;
-  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
 }
 
 .action-btn.primary {
-  background: var(--primary-color);
-  color: #fff;
+  background: #b8a082;
+  border-color: #b8a082;
 }
 
-.action-btn.secondary {
-  background: rgba(92, 77, 70, 0.1);
-  color: var(--primary-color);
-}
-
-.action-icon {
-  font-size: 18px;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: flex-end;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: var(--bg-card);
-  width: 100%;
-  padding: 24px;
-  border-radius: 25px 25px 0 0;
-  max-height: 80vh;
-  overflow-y: auto;
-}
-
-.modal-title {
-  font-size: 18px;
-  font-weight: 600;
+.success-content {
   text-align: center;
-  margin-bottom: 20px;
-}
-
-.form-group {
-  margin-bottom: 16px;
-}
-
-.form-label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 14px;
-  color: var(--text-color);
-}
-
-.form-control {
-  width: 100%;
-  padding: 14px 16px;
-  border: 2px solid var(--border-color);
-  border-radius: 15px;
-  font-size: 14px;
-  background: var(--bg-color);
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-.form-control:focus {
-  border-color: var(--primary-color);
-}
-
-.form-control::placeholder {
-  color: var(--text-muted);
-}
-
-.modal-footer {
-  display: flex;
-  gap: 12px;
-  margin-top: 24px;
-}
-
-.modal-footer .btn {
-  flex: 1;
-  padding: 14px;
-}
-
-.success-modal {
-  background: var(--bg-card);
-  width: 85%;
-  max-width: 350px;
-  padding: 40px 30px;
-  border-radius: 25px;
-  text-align: center;
-  margin: auto;
+  padding: 20px 0;
 }
 
 .success-icon {
@@ -552,17 +404,16 @@ const closeSuccessModal = () => {
   margin-bottom: 20px;
 }
 
-.success-title {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--text-color);
-  margin-bottom: 12px;
-}
-
 .success-text {
   font-size: 14px;
-  color: var(--text-muted);
-  margin-bottom: 24px;
+  color: #888;
+  margin: 0;
+}
+
+.success-btn {
+  background: #b8a082;
+  border-color: #b8a082;
+  width: 100%;
 }
 
 @media screen and (min-width: 768px) {
@@ -573,12 +424,6 @@ const closeSuccessModal = () => {
 
   .detail-header {
     padding: 25px 30px;
-  }
-
-  .back-btn, .share-btn {
-    width: 48px;
-    height: 48px;
-    font-size: 22px;
   }
 
   .pet-main-content {
@@ -592,23 +437,17 @@ const closeSuccessModal = () => {
   .pet-image-container {
     width: 45%;
     height: 400px;
-    border-radius: 25px;
+    border-radius: 20px;
     overflow: hidden;
   }
 
   .pet-info-section {
     flex: 1;
     margin: 0;
-    padding: 30px;
   }
 
   .pet-name {
     font-size: 32px;
-  }
-
-  .pet-meta-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
   }
 
   .meta-text {
@@ -621,31 +460,8 @@ const closeSuccessModal = () => {
     margin: 0 auto;
   }
 
-  .section-card {
-    padding: 24px;
-  }
-
-  .section-title {
-    font-size: 18px;
-  }
-
-  .section-content {
-    font-size: 16px;
-  }
-
   .action-bar {
     display: none;
-  }
-
-  .modal-overlay {
-    align-items: center;
-  }
-
-  .modal-content {
-    width: 90%;
-    max-width: 500px;
-    border-radius: 25px;
-    max-height: 90vh;
   }
 }
 
@@ -660,7 +476,7 @@ const closeSuccessModal = () => {
   }
 
   .pet-info-section {
-    padding: 40px;
+    padding: 30px;
   }
 
   .pet-name {

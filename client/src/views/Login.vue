@@ -2,76 +2,61 @@
   <div class="login-page">
     <div class="login-header">
       <div class="logo-wrapper">
-        <span class="logo-icon">🐾</span>
+        <el-icon :size="40" color="#fff"><Promotion /></el-icon>
         <span class="logo-text">宠爱到家</span>
       </div>
       <p class="login-subtitle">让爱不再流浪</p>
     </div>
 
     <div class="login-content">
-      <div class="login-card">
+      <el-card class="login-card">
         <h2 class="login-title">登录</h2>
         
-        <form @submit.prevent="handleLogin">
-          <div class="form-group">
-            <label class="form-label">手机号</label>
-            <input 
-              type="tel" 
-              v-model="form.phone" 
-              class="form-control" 
-              placeholder="请输入手机号"
-              maxlength="11"
-            />
-          </div>
+        <el-form :model="form" label-position="top" @submit.prevent="handleLogin">
+          <el-form-item label="手机号/用户名">
+            <el-input v-model="form.username" placeholder="请输入手机号或用户名" prefix-icon="User" />
+          </el-form-item>
           
-          <div class="form-group">
-            <label class="form-label">密码</label>
-            <input 
-              :type="showPassword ? 'text' : 'password'" 
-              v-model="form.password" 
-              class="form-control" 
+          <el-form-item label="密码">
+            <el-input
+              v-model="form.password"
+              :type="showPassword ? 'text' : 'password'"
               placeholder="请输入密码"
+              prefix-icon="Lock"
+              :suffix-icon="showPassword ? 'View' : 'Hide'"
+              @click="showPassword = !showPassword"
             />
-            <button type="button" class="toggle-password" @click="showPassword = !showPassword">
-              {{ showPassword ? '👁️' : '🙈' }}
-            </button>
-          </div>
+          </el-form-item>
 
           <div class="form-row">
-            <label class="checkbox-label">
-              <input type="checkbox" v-model="rememberMe" />
-              <span class="checkmark"></span>
-              <span>记住我</span>
-            </label>
-            <a href="#" class="forgot-link">忘记密码?</a>
+            <el-checkbox v-model="rememberMe">记住我</el-checkbox>
+            <el-link type="primary">忘记密码?</el-link>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-block login-btn">
+          <el-button type="primary" native-type="submit" class="login-btn" size="large">
             登录
-          </button>
-        </form>
+          </el-button>
+        </el-form>
 
-        <div class="divider">
-          <span class="divider-text">或</span>
-        </div>
+        <el-divider>或</el-divider>
 
-        <button class="btn btn-secondary btn-block">
+        <el-button class="other-login-btn" size="large">
           其他登录方式
-        </button>
+        </el-button>
 
         <p class="register-link">
           还没有账号? 
-          <a href="/register" class="link-primary">立即注册</a>
+          <router-link to="/register" class="link-primary">立即注册</router-link>
         </p>
-      </div>
+      </el-card>
     </div>
 
     <div class="login-footer">
       <p>登录即表示同意</p>
       <div class="footer-links">
-        <a href="#">用户协议</a>
+        <el-link type="info">用户协议</el-link>
         <span>|</span>
-        <a href="#">隐私政策</a>
+        <el-link type="info">隐私政策</el-link>
       </div>
     </div>
   </div>
@@ -81,6 +66,7 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from '../store'
+import { Promotion } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const { state } = useStore()
@@ -88,12 +74,12 @@ const showPassword = ref(false)
 const rememberMe = ref(false)
 
 const form = reactive({
-  phone: '',
+  username: '',
   password: ''
 })
 
 const handleLogin = () => {
-  if (!form.phone || !form.password) {
+  if (!form.username || !form.password) {
     alert('请填写完整信息')
     return
   }
@@ -101,7 +87,7 @@ const handleLogin = () => {
   state.user = {
     id: 1,
     name: '用户',
-    phone: form.phone
+    username: form.username
   }
   
   router.push('/')
@@ -111,7 +97,7 @@ const handleLogin = () => {
 <style scoped>
 .login-page {
   min-height: 100vh;
-  background: linear-gradient(180deg, var(--primary-color) 0%, var(--bg-color) 100%);
+  background: linear-gradient(180deg, #b8a082 0%, #f5efe7 100%);
   display: flex;
   flex-direction: column;
 }
@@ -129,10 +115,6 @@ const handleLogin = () => {
   margin-bottom: 12px;
 }
 
-.logo-icon {
-  font-size: 40px;
-}
-
 .logo-text {
   font-size: 32px;
   font-weight: 700;
@@ -142,6 +124,7 @@ const handleLogin = () => {
 .login-subtitle {
   font-size: 16px;
   color: rgba(255, 255, 255, 0.8);
+  margin: 0;
 }
 
 .login-content {
@@ -150,57 +133,17 @@ const handleLogin = () => {
 }
 
 .login-card {
-  background: var(--bg-card);
   border-radius: 25px;
-  padding: 30px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  padding: 30px 20px;
 }
 
 .login-title {
   font-size: 24px;
   font-weight: 600;
-  color: var(--text-color);
+  color: #444;
   text-align: center;
+  margin-top: 0;
   margin-bottom: 30px;
-}
-
-.form-group {
-  position: relative;
-  margin-bottom: 20px;
-}
-
-.form-label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 14px;
-  color: var(--text-color);
-  font-weight: 500;
-}
-
-.form-control {
-  width: 100%;
-  padding: 16px;
-  border: 2px solid var(--border-color);
-  border-radius: 15px;
-  font-size: 16px;
-  background: var(--bg-color);
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-.form-control:focus {
-  border-color: var(--primary-color);
-}
-
-.toggle-password {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
 }
 
 .form-row {
@@ -210,76 +153,32 @@ const handleLogin = () => {
   margin-bottom: 24px;
 }
 
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: var(--text-color);
-  cursor: pointer;
-}
-
-.checkbox-label input {
-  display: none;
-}
-
-.checkmark {
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--border-color);
-  border-radius: 4px;
-  position: relative;
-}
-
-.checkbox-label input:checked + .checkmark::after {
-  content: '✓';
-  position: absolute;
-  top: -2px;
-  left: 3px;
-  font-size: 14px;
-  color: var(--primary-color);
-}
-
-.forgot-link {
-  font-size: 14px;
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
 .login-btn {
+  width: 100%;
   padding: 18px;
   font-size: 18px;
+  background-color: #b8a082;
+  border-color: #b8a082;
 }
 
-.divider {
-  display: flex;
-  align-items: center;
-  margin: 24px 0;
+.login-btn:hover {
+  background-color: #a08b70 !important;
+  border-color: #a08b70 !important;
 }
 
-.divider::before,
-.divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border-color);
-}
-
-.divider-text {
-  padding: 0 16px;
-  font-size: 14px;
-  color: var(--text-muted);
+.other-login-btn {
+  width: 100%;
 }
 
 .register-link {
   text-align: center;
   font-size: 14px;
-  color: var(--text-muted);
+  color: #888;
   margin-top: 20px;
 }
 
 .link-primary {
-  color: var(--primary-color);
+  color: #b8a082;
   text-decoration: none;
   font-weight: 500;
 }
@@ -291,7 +190,7 @@ const handleLogin = () => {
 
 .login-footer p {
   font-size: 12px;
-  color: var(--text-muted);
+  color: #888;
   margin-bottom: 8px;
 }
 
@@ -302,14 +201,8 @@ const handleLogin = () => {
   gap: 12px;
 }
 
-.footer-links a {
-  font-size: 12px;
-  color: var(--text-muted);
-  text-decoration: none;
-}
-
 .footer-links span {
-  color: var(--border-color);
+  color: #ddd;
 }
 
 @media screen and (min-width: 768px) {

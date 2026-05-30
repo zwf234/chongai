@@ -8,73 +8,63 @@
     </div>
 
     <div class="search-section">
-      <div class="search-bar">
-        <i class="icon-search">🔍</i>
-        <input type="text" v-model="searchQuery" placeholder="搜索宠物名称..." @keyup.enter="handleSearch" />
-        <button class="search-btn" @click="handleSearch">→</button>
-      </div>
+      <el-input
+        v-model="searchQuery"
+        placeholder="搜索宠物名称..."
+        :prefix-icon="Search"
+        @keyup.enter="handleSearch"
+        class="search-input"
+      >
+        <template #append>
+          <el-button :icon="ArrowRight" @click="handleSearch" />
+        </template>
+      </el-input>
     </div>
 
     <div class="filter-section">
-      <div class="filter-tabs">
-        <button 
-          v-for="tab in filterTabs" 
-          :key="tab.value"
-          :class="['filter-tab', { active: activeFilter === tab.value }]"
-          @click="activeFilter = tab.value"
-        >
+      <el-radio-group v-model="activeFilter" class="filter-tabs">
+        <el-radio-button v-for="tab in filterTabs" :key="tab.value" :label="tab.value">
           {{ tab.label }}
-        </button>
-      </div>
+        </el-radio-button>
+      </el-radio-group>
       
-      <div class="type-filter">
-        <button 
-          v-for="type in typeFilters" 
-          :key="type.value"
-          :class="['type-btn', { active: activeType === type.value }]"
-          @click="activeType = type.value"
-        >
-          {{ type.icon }} {{ type.label }}
-        </button>
-      </div>
+      <el-radio-group v-model="activeType" class="type-filter">
+        <el-radio-button v-for="type in typeFilters" :key="type.value" :label="type.value">
+          {{ type.label }}
+        </el-radio-button>
+      </el-radio-group>
     </div>
 
     <div class="pets-container">
-      <div class="pets-grid">
-        <div 
-          v-for="pet in filteredPets" 
-          :key="pet.id" 
-          class="pet-card"
-          @click="goToDetail(pet.id)"
-        >
-          <div class="pet-image-wrapper">
-            <img :src="pet.image" :alt="pet.name" class="pet-image" />
-          </div>
-          <div class="pet-card-body">
-            <div class="pet-name-row">
-              <span class="pet-name">{{ pet.name }}</span>
-              <span class="pet-age">{{ pet.age }}</span>
-            </div>
-            <div class="pet-meta-row">
-              <span class="pet-type" :class="pet.type === 'dog' ? 'dog' : 'cat'">
-                <span class="type-dot"></span>
-                {{ pet.type === 'dog' ? '狗狗' : '猫咪' }}
-              </span>
-              <span class="pet-location">📍 {{ pet.location }}</span>
-            </div>
-            <div class="pet-distance">
-              <span class="distance-icon">📍</span>
-              <span class="distance-text">&lt;100m</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <el-row :gutter="16" v-if="filteredPets.length > 0">
+        <el-col :xs="12" :sm="12" :md="8" :lg="6" v-for="pet in filteredPets" :key="pet.id">
+          <el-card class="pet-card" shadow="hover" @click="goToDetail(pet.id)">
+            <template #image>
+              <div class="pet-image-wrapper">
+                <img :src="pet.image" :alt="pet.name" class="pet-image" />
+              </div>
+            </template>
+            <el-card-body>
+              <div class="pet-name-row">
+                <span class="pet-name">{{ pet.name }}</span>
+                <span class="pet-age">{{ pet.age }}</span>
+              </div>
+              <div class="pet-meta-row">
+                <el-tag type="info" size="small">
+                  {{ pet.type === 'dog' ? '狗狗' : '猫咪' }}
+                </el-tag>
+                <span class="pet-location">
+                  <el-icon :size="12"><Location /></el-icon> {{ pet.location }}
+                </span>
+              </div>
+            </el-card-body>
+          </el-card>
+        </el-col>
+      </el-row>
 
-      <div v-if="filteredPets.length === 0" class="empty-state">
-        <div class="empty-icon">🐾</div>
-        <p class="empty-text">暂无符合条件的宠物</p>
-        <button class="empty-btn" @click="resetFilters">重新搜索</button>
-      </div>
+      <el-empty v-else description="暂无符合条件的宠物" class="empty-state">
+        <el-button type="primary" @click="resetFilters">重新搜索</el-button>
+      </el-empty>
     </div>
   </div>
 </template>
@@ -82,6 +72,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { Search, ArrowRight, Location } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const searchQuery = ref('')
@@ -95,9 +86,9 @@ const filterTabs = [
 ]
 
 const typeFilters = [
-  { label: '全部', value: 'all', icon: '🐾' },
-  { label: '狗狗', value: 'dog', icon: '🐕' },
-  { label: '猫咪', value: 'cat', icon: '🐱' }
+  { label: '全部', value: 'all' },
+  { label: '狗狗', value: 'dog' },
+  { label: '猫咪', value: 'cat' }
 ]
 
 const allPets = ref([
@@ -151,12 +142,12 @@ const goToDetail = (id) => {
 <style scoped>
 .pets-page {
   min-height: 100vh;
-  background: var(--bg-color);
+  background: #f5efe7;
   padding-bottom: 80px;
 }
 
 .page-header {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+  background: linear-gradient(135deg, #b8a082 0%, #c9b896 100%);
   padding: 30px 15px;
   border-radius: 0 0 30px 30px;
 }
@@ -174,6 +165,7 @@ const goToDetail = (id) => {
 .page-subtitle {
   font-size: 14px;
   opacity: 0.9;
+  margin: 0;
 }
 
 .search-section {
@@ -181,126 +173,36 @@ const goToDetail = (id) => {
   margin-top: -25px;
 }
 
-.search-bar {
-  background: var(--bg-card);
-  border-radius: 35px;
-  padding: 14px 20px;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.icon-search {
-  color: var(--text-muted);
-  font-size: 18px;
-  margin-right: 12px;
-}
-
-.search-bar input {
-  flex: 1;
-  background: transparent;
-  border: none;
-  color: var(--text-color);
-  font-size: 16px;
-  outline: none;
-}
-
-.search-bar input::placeholder {
-  color: var(--text-muted);
-}
-
-.search-btn {
-  background: var(--primary-color);
-  border: none;
-  color: #fff;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  cursor: pointer;
+.search-input :deep(.el-input-group__prepend),
+.search-input :deep(.el-input__wrapper) {
+  background: #fff;
 }
 
 .filter-section {
   padding: 0 15px 15px;
 }
 
-.filter-tabs {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 15px;
-}
-
-.filter-tab {
-  padding: 8px 20px;
-  border-radius: 20px;
-  border: none;
-  background: var(--bg-card);
-  color: var(--text-muted);
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.filter-tab.active {
-  background: var(--primary-color);
-  color: #fff;
-}
-
+.filter-tabs,
 .type-filter {
-  display: flex;
-  gap: 12px;
+  margin-bottom: 15px;
+  width: 100%;
 }
 
-.type-btn {
+.filter-tabs :deep(.el-radio-button),
+.type-filter :deep(.el-radio-button) {
   flex: 1;
-  padding: 10px 15px;
-  border-radius: 15px;
-  border: 2px solid var(--border-color);
-  background: transparent;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-.type-btn.active {
-  border-color: var(--primary-color);
-  background: rgba(92, 77, 70, 0.1);
-  color: var(--primary-color);
 }
 
 .pets-container {
   padding: 0 15px;
 }
 
-.pets-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-
 .pet-card {
-  background: var(--bg-card);
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 16px;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.pet-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .pet-image-wrapper {
-  position: relative;
   width: 100%;
   height: 160px;
 }
@@ -309,11 +211,6 @@ const goToDetail = (id) => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 20px 20px 0 0;
-}
-
-.pet-card-body {
-  padding: 12px;
 }
 
 .pet-name-row {
@@ -326,87 +223,30 @@ const goToDetail = (id) => {
 .pet-name {
   font-size: 16px;
   font-weight: 600;
-  color: var(--text-color);
+  color: #444;
 }
 
 .pet-age {
   font-size: 12px;
-  color: var(--text-muted);
+  color: #888;
 }
 
 .pet-meta-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
-}
-
-.pet-type {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-}
-
-.type-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-.pet-type.dog .type-dot {
-  background: var(--dog-color);
-}
-
-.pet-type.cat .type-dot {
-  background: var(--cat-color);
 }
 
 .pet-location {
   font-size: 11px;
-  color: var(--text-muted);
-}
-
-.pet-distance {
+  color: #888;
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.distance-icon {
-  font-size: 12px;
-}
-
-.distance-text {
-  font-size: 12px;
-  color: var(--accent-color);
-  font-weight: 500;
-}
-
 .empty-state {
-  text-align: center;
   padding: 60px 20px;
-}
-
-.empty-icon {
-  font-size: 60px;
-  margin-bottom: 20px;
-}
-
-.empty-text {
-  font-size: 16px;
-  color: var(--text-muted);
-  margin-bottom: 20px;
-}
-
-.empty-btn {
-  background: var(--primary-color);
-  color: #fff;
-  border: none;
-  padding: 12px 32px;
-  border-radius: 25px;
-  font-size: 14px;
-  cursor: pointer;
 }
 
 @media screen and (min-width: 768px) {
@@ -430,16 +270,9 @@ const goToDetail = (id) => {
   .search-section {
     padding: 25px 30px;
     margin-top: -30px;
-  }
-
-  .search-bar {
-    padding: 16px 24px;
     max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .search-bar input {
-    font-size: 18px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .filter-section {
@@ -448,33 +281,10 @@ const goToDetail = (id) => {
     margin: 0 auto;
   }
 
-  .filter-tabs {
-    gap: 16px;
-  }
-
-  .filter-tab {
-    padding: 10px 24px;
-    font-size: 16px;
-  }
-
-  .type-filter {
-    gap: 16px;
-  }
-
-  .type-btn {
-    padding: 12px 20px;
-    font-size: 16px;
-  }
-
   .pets-container {
     padding: 0 30px;
     max-width: 1200px;
     margin: 0 auto;
-  }
-
-  .pets-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
   }
 
   .pet-image-wrapper {
@@ -497,10 +307,6 @@ const goToDetail = (id) => {
 
   .pets-container {
     padding: 0 50px;
-  }
-
-  .pets-grid {
-    grid-template-columns: repeat(4, 1fr);
   }
 
   .pet-image-wrapper {

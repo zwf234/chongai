@@ -1,85 +1,76 @@
 <template>
   <div class="register-page">
-    <div class="register-header">
-      <button class="back-btn" @click="goBack">←</button>
-      <span class="header-title">注册</span>
-      <div class="placeholder"></div>
-    </div>
+    <el-card class="register-header" :body-style="{ padding: '12px 16px' }">
+      <div class="header-content">
+        <el-button icon="ArrowLeft" circle @click="goBack" />
+        <span class="header-title">注册</span>
+        <div class="placeholder"></div>
+      </div>
+    </el-card>
 
     <div class="register-content">
-      <div class="register-card">
-        <form @submit.prevent="handleRegister">
-          <div class="form-group">
-            <label class="form-label">手机号</label>
-            <input 
-              type="tel" 
-              v-model="form.phone" 
-              class="form-control" 
-              placeholder="请输入手机号"
-              maxlength="11"
-            />
-          </div>
+      <el-card class="register-card">
+        <el-form :model="form" label-position="top" @submit.prevent="handleRegister">
+          <el-form-item label="用户名">
+            <el-input v-model="form.username" placeholder="请输入用户名" prefix-icon="User" />
+          </el-form-item>
 
-          <div class="form-group">
-            <label class="form-label">验证码</label>
+          <el-form-item label="手机号">
+            <el-input v-model="form.phone" placeholder="请输入手机号" prefix-icon="Phone" maxlength="11" />
+          </el-form-item>
+
+          <el-form-item label="验证码">
             <div class="code-input-group">
-              <input 
-                type="text" 
-                v-model="form.code" 
-                class="form-control code-input" 
-                placeholder="请输入验证码"
-                maxlength="6"
-              />
-              <button type="button" :disabled="countdown > 0" class="send-code-btn" @click="sendCode">
+              <el-input v-model="form.code" placeholder="请输入验证码" class="code-input" prefix-icon="Key" maxlength="6" />
+              <el-button :disabled="countdown > 0" @click="sendCode" class="send-code-btn">
                 {{ countdown > 0 ? `${countdown}s` : '获取验证码' }}
-              </button>
+              </el-button>
             </div>
-          </div>
+          </el-form-item>
 
-          <div class="form-group">
-            <label class="form-label">密码</label>
-            <input 
-              :type="showPassword ? 'text' : 'password'" 
-              v-model="form.password" 
-              class="form-control" 
+          <el-form-item label="密码">
+            <el-input
+              v-model="form.password"
+              :type="showPassword ? 'text' : 'password'"
               placeholder="请输入密码"
-            />
-            <button type="button" class="toggle-password" @click="showPassword = !showPassword">
-              {{ showPassword ? '👁️' : '🙈' }}
-            </button>
-          </div>
+              prefix-icon="Lock"
+            >
+              <template #suffix>
+                <el-icon class="toggle-password" @click="showPassword = !showPassword">
+                  <component :is="showPassword ? 'View' : 'Hide'" />
+                </el-icon>
+              </template>
+            </el-input>
+          </el-form-item>
 
-          <div class="form-group">
-            <label class="form-label">确认密码</label>
-            <input 
-              :type="showPassword ? 'text' : 'password'" 
-              v-model="form.confirmPassword" 
-              class="form-control" 
+          <el-form-item label="确认密码">
+            <el-input
+              v-model="form.confirmPassword"
+              :type="showPassword ? 'text' : 'password'"
               placeholder="请确认密码"
+              prefix-icon="Lock"
             />
-          </div>
+          </el-form-item>
 
           <div class="form-row">
-            <label class="checkbox-label">
-              <input type="checkbox" v-model="agree" />
-              <span class="checkmark"></span>
-              <span>我已阅读并同意</span>
-              <a href="#" class="agreement-link">《用户协议》</a>
-              <span>和</span>
-              <a href="#" class="agreement-link">《隐私政策》</a>
-            </label>
+            <el-checkbox v-model="agree">
+              我已阅读并同意
+              <el-link type="primary">《用户协议》</el-link>
+              和
+              <el-link type="primary">《隐私政策》</el-link>
+            </el-checkbox>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-block register-btn">
+          <el-button type="primary" native-type="submit" class="register-btn" size="large">
             注册
-          </button>
-        </form>
+          </el-button>
+        </el-form>
 
         <p class="login-link">
           已有账号? 
-          <a href="/login" class="link-primary">立即登录</a>
+          <router-link to="/login" class="link-primary">立即登录</router-link>
         </p>
-      </div>
+      </el-card>
     </div>
   </div>
 </template>
@@ -96,6 +87,7 @@ const agree = ref(false)
 const countdown = ref(0)
 
 const form = reactive({
+  username: '',
   phone: '',
   code: '',
   password: '',
@@ -122,7 +114,7 @@ const sendCode = () => {
 }
 
 const handleRegister = () => {
-  if (!form.phone || !form.code || !form.password || !form.confirmPassword) {
+  if (!form.username || !form.phone || !form.code || !form.password || !form.confirmPassword) {
     alert('请填写完整信息')
     return
   }
@@ -145,6 +137,7 @@ const handleRegister = () => {
   state.user = {
     id: 1,
     name: '用户',
+    username: form.username,
     phone: form.phone
   }
   
@@ -155,43 +148,30 @@ const handleRegister = () => {
 <style scoped>
 .register-page {
   min-height: 100vh;
-  background: var(--bg-color);
+  background: #f5efe7;
   padding-bottom: 30px;
 }
 
 .register-header {
-  background: var(--bg-card);
-  padding: 20px 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  border: none;
+  border-radius: 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.back-btn {
-  width: 40px;
-  height: 40px;
-  background: rgba(92, 77, 70, 0.1);
-  border: none;
-  border-radius: 50%;
-  font-size: 18px;
-  cursor: pointer;
+.header-content {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
 }
 
 .header-title {
   font-size: 18px;
   font-weight: 600;
-  color: var(--text-color);
+  color: #444;
 }
 
 .placeholder {
-  width: 40px;
+  width: 32px;
 }
 
 .register-content {
@@ -199,38 +179,8 @@ const handleRegister = () => {
 }
 
 .register-card {
-  background: var(--bg-card);
   border-radius: 25px;
-  padding: 30px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-}
-
-.form-group {
-  position: relative;
-  margin-bottom: 20px;
-}
-
-.form-label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 14px;
-  color: var(--text-color);
-  font-weight: 500;
-}
-
-.form-control {
-  width: 100%;
-  padding: 16px;
-  border: 2px solid var(--border-color);
-  border-radius: 15px;
-  font-size: 16px;
-  background: var(--bg-color);
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-.form-control:focus {
-  border-color: var(--primary-color);
+  padding: 30px 20px;
 }
 
 .code-input-group {
@@ -243,91 +193,47 @@ const handleRegister = () => {
 }
 
 .send-code-btn {
-  padding: 16px 24px;
-  border: 2px solid var(--primary-color);
-  border-radius: 15px;
-  background: transparent;
-  color: var(--primary-color);
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  white-space: nowrap;
+  background-color: #b8a082;
+  border-color: #b8a082;
 }
 
 .send-code-btn:hover:not(:disabled) {
-  background: rgba(92, 77, 70, 0.1);
-}
-
-.send-code-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  background-color: #a08b70 !important;
+  border-color: #a08b70 !important;
 }
 
 .toggle-password {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  font-size: 18px;
   cursor: pointer;
+  font-size: 18px;
 }
 
 .form-row {
   margin-bottom: 24px;
 }
 
-.checkbox-label {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px;
-  font-size: 13px;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-
-.checkbox-label input {
-  display: none;
-}
-
-.checkmark {
-  width: 16px;
-  height: 16px;
-  border: 2px solid var(--border-color);
-  border-radius: 3px;
-  position: relative;
-}
-
-.checkbox-label input:checked + .checkmark::after {
-  content: '✓';
-  position: absolute;
-  top: -3px;
-  left: 2px;
-  font-size: 12px;
-  color: var(--primary-color);
-}
-
-.agreement-link {
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
 .register-btn {
+  width: 100%;
   padding: 18px;
   font-size: 18px;
+  background-color: #b8a082;
+  border-color: #b8a082;
+}
+
+.register-btn:hover {
+  background-color: #a08b70 !important;
+  border-color: #a08b70 !important;
 }
 
 .login-link {
   text-align: center;
   font-size: 14px;
-  color: var(--text-muted);
+  color: #888;
   margin-top: 24px;
 }
 
 .link-primary {
-  color: var(--primary-color);
+  color: #b8a082;
   text-decoration: none;
   font-weight: 500;
 }
@@ -340,16 +246,10 @@ const handleRegister = () => {
     align-items: center;
   }
 
-  .register-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-  }
-
   .register-content {
     padding: 30px;
     max-width: 450px;
+    width: 100%;
   }
 
   .register-card {
